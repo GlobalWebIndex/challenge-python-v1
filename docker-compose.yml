@@ -10,7 +10,7 @@ services:
       APP_DEBUG_MODE: "True"
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
-      POSTGRES_NAME: dinopedia
+      POSTGRES_DB: dinopedia
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     entrypoint: ""
@@ -18,11 +18,9 @@ services:
     ports:
       - 8002:8000
     volumes:
-      - ./src:/usr/src/app/src
-      - ./tests:/usr/src/app/tests
-      - ./scripts:/usr/src/app/scripts
-      - ./pyproject.toml:/usr/src/app/pyproject.toml
-      - ./poetry.lock:/usr/src/app/poetry.lock
+      - ./dinopedia:/usr/dinopedia/app/dinopedia
+      - ./pyproject.toml:/usr/dinopedia/app/pyproject.toml
+      - ./poetry.lock:/usr/dinopedia/app/poetry.lock
     depends_on:
       - db
 
