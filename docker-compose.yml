@@ -14,9 +14,9 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     entrypoint: ""
-    command: "python dinopedia/manage.py runserver"
+    command: "python dinopedia/manage.py runserver 0.0.0.0:8000"
     ports:
-      - 8002:8000
+      - 8000:8000
     volumes:
       - ./dinopedia:/usr/dinopedia/app/dinopedia
       - ./pyproject.toml:/usr/dinopedia/app/pyproject.toml
