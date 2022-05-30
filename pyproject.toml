@@ -9,6 +9,7 @@ authors = ["Your Name <you@example.com>"]
 python = "^3.10"
 Django = "*"
 psycopg2 = "*"
+pytest = "*"
 
 
 [build-system]

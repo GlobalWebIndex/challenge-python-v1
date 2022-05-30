@@ -19,6 +19,7 @@ services:
       - 8000:8000
     volumes:
       - ./dinopedia:/usr/dinopedia/app/dinopedia
+      - ./tests:/usr/dinopedia/app/tests
       - ./pyproject.toml:/usr/dinopedia/app/pyproject.toml
       - ./poetry.lock:/usr/dinopedia/app/poetry.lock
     depends_on:
