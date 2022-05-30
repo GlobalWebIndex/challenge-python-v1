@@ -21,7 +21,7 @@ As a developer you’d like to Integrate with the application and have the abili
 
 We would like you to try and present a well written solution that will cover the above criteria. Utilising the following points
 * Python 3.*
-* Django (_Current repo uses a django template, restructure if it your solution is based on anything else like flask/fast api etc_)
+* Django (_Current repo uses a django template. Feel free to restructure if your solution is based on anything else like flask/fast api etc_)
 * Database integration (Postgres or any equivalent)
 * Docker
 * Testing suite
