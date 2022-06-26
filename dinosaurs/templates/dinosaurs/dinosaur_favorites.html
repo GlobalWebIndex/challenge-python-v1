@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<h1>Favorites</h1>
+{% if dinosaur_list %}
+{% for dinosaur in dinosaur_list %}
+{% if forloop.first %}
+<div class="row mt-4 hidden-md-up">{% endif %}
+    <div class="col-md-4">
+        <div class="card" style="width: 18rem;">
+            <a href="{{ dinosaur.get_absolute_url }}">
+                {% if dinosaur.image_1 == 'default-dinosaur.png'  %}
+                    <img src="{% static 'images/default-dinosaur.png' %}" class="card-img-top" alt="Dinosaur Image 1">
+                {% else %}
+                    <img src="{% get_media_prefix %}{{ dinosaur.image_1 }}" class="card-img-top" alt="Dinosaur Image 1">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title"> {{ dinosaur.name }} </h5>
+                </div>
+            </a>
+        </div>
+    </div>
+    {% if forloop.counter|divisibleby:3 %}
+</div>
+<div class="row mt-4 hidden-md-up">{% endif %}
+    {% if forloop.last %}
+</div>{% endif %}
+{% endfor %}
+{% else %}
+<p>There are no dinosaurs.</p>
+{% endif %}
+{% endblock %}
+

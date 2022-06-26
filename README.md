@@ -1,33 +1,32 @@
-# GlobalWebIndex Python Challenge - v1 | Exercise: DinosaursAficionado
+# DinosaursAficionado
 
-Create a Python application for Dinosaurs Aficionados which is going to be used to maintain and provide various information about all kinds of Dinosaurs.
 
-As an application administrator you’d like to have the ability to :
-* Add a kind of dinosaur 
-  * Name
-  * Eating classification e.g [herbivores, omnivores, and carnivores]
-  * Typical Colour
-  * Period they lived e.g [triassic , jurassic, cretaceous, paleogene, neogene]
-  * Average Size e.g [tiny, very small, small, medium, large, very large etc]).
-* Remove a kind(s) of dinosaur(s)
-* Associate up to 2 images with each dinosaur
-* Remove image(s) 
+Due to time reasons the following are not fully implemented:
+- Favorites functionality is not fully implemented. You can only add and view favorites, you can't remove though.
+- When uploading images there should be a max file size limit(e.g 5MB) and after image is uploaded it could be processed to reduce size.
 
-As a developer you’d like to Integrate with the application and have the ability to : 
-* Find all the available kinds of dinosaurs
-* Search for a particular kind and get their images
-* Like your favourite (Optional)
-* See your favourites (Optional)
 
-We would like you to try and present a well written solution that will cover the above criteria. Utilising the following points
-* Python 3.*
-* Django (_Current repo uses a django template. Feel free to restructure if your solution is based on anything else like flask/fast api etc_)
-* Database integration (Postgres or any equivalent)
-* Docker
-* Testing suite
-* README
+## Features
+- You can add dinosaurs either from http://127.0.0.1:8000/admin or if you add a user with permissions ("can_edit", "User can create/edit/delete dinosaurs") then this user has the option to add dinosaurs.
+- As a regular user, you can view all dinosaurs, search by name, add to favorites and view them.
 
-Get creative as much as you want, we WILL appreciate it. You will not be evaluated based on how well you follow these instructions, but based on how sensible your solution will be. In case you are not able to implement something you would normally implement for time reasons, make it clear with a comment.
 
-# Submission
-Just fork and share with us your work <cbekos@gwi.com> / <tvesela@gwi.com> / <zmaxa@gwi.com> / <tcechal@gwi.com>
+## Docker
+```sh
+cd dinopedia_project
+docker-compose up --build
+```
+
+Then navigate to http://127.0.0.1:8000
+
+## Data
+Some data are included in 'data.sql' file. 
+Can be loaded with 
+```sh
+cat data.sql | docker exec -i dinopediaproject_db_1 psql -U postgres
+```
+
+Three users exists if 'data.sql' is imported.
+- Super user: alex Password: pass
+- Admin user: admin Password: strong-pass
+- Developer user: developer Password: strong-pass

@@ -1,0 +1,17 @@
+/* Show it is fixed to the top */
+body {
+    min-height: 75rem;
+    padding-top: 4.5rem;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 15vw;
+    object-fit: contain;
+}
+
+.carousel-inner > .carousel-item > img {
+    width: 640px;
+    height: 360px;
+    object-fit: contain;
+}
