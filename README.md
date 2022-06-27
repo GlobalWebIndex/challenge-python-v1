@@ -13,7 +13,7 @@ Due to time reasons the following are not fully implemented:
 
 ## Docker
 ```sh
-cd dinopedia_project
+cd challenge-python-v1
 docker-compose up --build
 ```
 
