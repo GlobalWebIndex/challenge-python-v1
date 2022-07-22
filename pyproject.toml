@@ -8,8 +8,8 @@ authors = ["Your Name <you@example.com>"]
 [tool.poetry.dependencies]
 python = "^3.8"
 Django = "*"
-psycopg2 = "*"
 pytest = "*"
+psycopg2-binary = "^2.9.3"
 
 
 [build-system]
