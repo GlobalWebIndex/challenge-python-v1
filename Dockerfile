@@ -1,4 +1,4 @@
-FROM python:3.10.2-slim as dependencies
+FROM python:3.8.13-slim as dependencies
 
 COPY install-poetry.py ./
 RUN POETRY_HOME=/opt/poetry python install-poetry.py --yes
@@ -17,7 +17,7 @@ COPY pyproject.toml poetry.lock ./
 RUN poetry install --no-dev --no-root
 
 ##################################
-FROM python:3.10.2-slim as production
+FROM python:3.8.13-slim as production
 
 # postgres dependency - to see if needed or not
 RUN apt update && apt --assume-yes install libpq5
