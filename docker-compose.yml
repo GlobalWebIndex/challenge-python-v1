@@ -13,8 +13,15 @@ services:
       POSTGRES_DB: dinopedia
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      DJANGO_SUPERUSER_USERNAME: admin
+      DJANGO_SUPERUSER_EMAIL: admin@admin.com
+      DJANGO_SUPERUSER_PASSWORD: admin
     entrypoint: ""
-    command: "python dinopedia/manage.py runserver 0.0.0.0:8000"
+    # command: "python dinopedia/manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python dinopedia/manage.py makemigrations && 
+            python dinopedia/manage.py migrate &&  
+            python dinopedia/manage.py createsuperuser --noinput &&
+            python dinopedia/manage.py runserver 0.0.0.0:8000" 
     ports:
       - 8000:8000
     volumes:
@@ -31,4 +38,4 @@ services:
       POSTGRES_DB: dinopedia
       POSTGRES_PASSWORD: postgres
     ports:
-      - 5432:5432
+      - 5435:5432
