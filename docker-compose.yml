@@ -20,8 +20,10 @@ services:
     # command: "python dinopedia/manage.py runserver 0.0.0.0:8000"
     command: bash -c "python dinopedia/manage.py makemigrations && 
             python dinopedia/manage.py migrate &&  
-            python dinopedia/manage.py createsuperuser --noinput &&
             python dinopedia/manage.py runserver 0.0.0.0:8000" 
+            # run this only the first time before runserver
+            # python dinopedia/manage.py createsuperuser --noinput && 
+
     ports:
       - 8000:8000
     volumes:
