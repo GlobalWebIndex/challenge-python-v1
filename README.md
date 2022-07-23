@@ -17,17 +17,30 @@ As an application administrator you’d like to have the ability to :
 
 ### Technical Approach
 
-Django is used to create the model
+Python 3.8 is used (not 3.10) and Poetry as package manager.
 
-The model persists in Postgres database
+Django is used to create the model.
 
-Docker is used to containerize the app; some care is needed for 
-- for the volumes
+The model persists in Postgres database.
+
+Docker with docker compose is used to containerize the app; some care is needed for 
+- the creation of the volumes
 - the creation of the superuser, and
 - the migrations
 - TODO: add a volume for the database
 
-For the images we install the package Pillow
+Run with 
+```
+docker-compose up --build -d
+```
+
+For the images we install the package Pillow.
+
+Black is used for formatting.
+
+In this section we do not use the Pytest suite yet.
+
+PgAdmin is used to check that everything in the database are as planned (both for the local development and for the docker)
 
 ### Admin tasks
 
