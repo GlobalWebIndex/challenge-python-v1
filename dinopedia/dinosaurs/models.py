@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import F, Q
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.contrib.postgres.fields import ArrayField
 
 
 class DinoOwner(models.Model):
@@ -174,8 +175,16 @@ class Dinosaur(models.Model):
     size = models.ForeignKey(DinoSize,null=True, blank=True, on_delete=models.SET_NULL)
     eating = models.ForeignKey(EatingType,null=True, blank=True, on_delete=models.SET_NULL)
     description = models.TextField(null=True, blank=True)
-
     #
+    typical_colours = ArrayField(
+        models.CharField(
+            max_length=12, null=True,
+        ),
+        size=4,
+        null=True,
+    )
+
+    # TODO add delete images if the dinosaur is deleted
     image1 = models.ImageField(
         upload_to=image_directory_path, default="img1.jpg"
     )
