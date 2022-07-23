@@ -10,7 +10,6 @@ class DinoOwner(models.Model):
     def __str__(self):
         return self.name
 
-
 class Period(models.Model):
     """Years are in BC, so the start year is always greater than the end year
     Names : triassic , jurassic, cretaceous, paleogene, neogene
@@ -155,4 +154,40 @@ class EatingType(models.Model):
         ordering = ["eating"]
         constraints = [
             models.UniqueConstraint(fields=["eating"], name="unique_eating_type"),
+        ]
+
+def image_directory_path(instance, filename):
+    """
+    where the images will be stored
+    """
+    folder_name = instance.name
+    # period = instance.timestamp # could use also period to further put the image
+
+    return f"images/{folder_name}/{filename}"
+class Dinosaur(models.Model):
+    """
+    A dinosaur is a living thing that lived in the past.
+    """
+
+    name = models.CharField(null=False,max_length=250)
+    period = models.ForeignKey(Period,null=True, blank=True, on_delete=models.SET_NULL)
+    size = models.ForeignKey(DinoSize,null=True, blank=True, on_delete=models.SET_NULL)
+    eating = models.ForeignKey(EatingType,null=True, blank=True, on_delete=models.SET_NULL)
+    description = models.TextField(null=True, blank=True)
+
+    #
+    image1 = models.ImageField(
+        upload_to=image_directory_path, default="img1.jpg"
+    )
+    image2 = models.ImageField(
+        upload_to=image_directory_path, default="img2.jpg"
+    )
+
+    def __str__(self):
+        return f"{self.name} : {self.period} : {self.size} : {self.eating}"
+
+    class Meta:
+        ordering = ["name"]
+        constraints = [
+            models.UniqueConstraint(fields=["name"], name="unique_dinosaur_name"),
         ]
