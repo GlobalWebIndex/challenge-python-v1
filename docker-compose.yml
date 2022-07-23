@@ -19,9 +19,10 @@ services:
     entrypoint: ""
     # command: "python dinopedia/manage.py runserver 0.0.0.0:8000"
     command: bash -c "
-            python dinopedia/manage.py makemigrations --noinput && 
             python dinopedia/manage.py migrate &&
-            python dinopedia/manage.py runserver 0.0.0.0:8000" 
+            python dinopedia/manage.py runserver 0.0.0.0:8000"
+            # if you do not have migrations run this first
+            # python dinopedia/manage.py makemigrations --noinput &&  
             # run this only the first time before runserver
             # python dinopedia/manage.py createsuperuser --noinput &&
 

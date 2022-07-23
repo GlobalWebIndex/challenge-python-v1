@@ -130,3 +130,29 @@ class DinoSize(models.Model):
             ),
         ]
 
+
+class EatingType(models.Model):
+    """ """
+
+    class EatingCategory(models.TextChoices):
+        CARNIVORE = "C", _("Carnivore")
+        HERBIVORE = "H", _("Herbivore")
+        OMNIVORE = "O", _("Omnivore")
+
+    eating = models.CharField(
+        max_length=15,
+        choices=EatingCategory.choices,
+        null=False,
+        blank=False,
+    )
+
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.eating}"
+
+    class Meta:
+        ordering = ["eating"]
+        constraints = [
+            models.UniqueConstraint(fields=["eating"], name="unique_eating_type"),
+        ]
