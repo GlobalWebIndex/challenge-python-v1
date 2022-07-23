@@ -17,7 +17,7 @@ class Period(models.Model):
     deliberately not in a choices field in case we want to add something new!!!
     """
 
-    name = models.TextField(null=False)
+    name = models.CharField(null=False,max_length=15)
     start_year = models.IntegerField(null=False)
     end_year = models.IntegerField(null=False)
     description = models.TextField(null=True, blank=True)
