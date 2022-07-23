@@ -34,4 +34,4 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 WORKDIR /usr/dinopedia/app
 
-COPY dinopedia dinopedia
+COPY --chown=app:app dinopedia dinopedia
