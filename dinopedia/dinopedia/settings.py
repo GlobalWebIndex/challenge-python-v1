@@ -102,7 +102,10 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+        # "rest_framework.permissions.IsAdminUser",
+    ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10000,
     # "EXCEPTION_HANDLER": "rest_framework.exceptions.exception_handler",
@@ -123,28 +126,27 @@ REST_FRAMEWORK = {
 
 # default drf-yasg setting
 SWAGGER_SETTINGS = {
-    'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_yasg.inspectors.SwaggerAutoSchema',
-
-    'DEFAULT_FIELD_INSPECTORS': [
-        'drf_yasg.inspectors.CamelCaseJSONFilter',
-        'drf_yasg.inspectors.RecursiveFieldInspector',
-        'drf_yasg.inspectors.ReferencingSerializerInspector',
-        'drf_yasg.inspectors.ChoiceFieldInspector',
-        'drf_yasg.inspectors.FileFieldInspector',
-        'drf_yasg.inspectors.DictFieldInspector',
-        'drf_yasg.inspectors.JSONFieldInspector',
-        'drf_yasg.inspectors.HiddenFieldInspector',
-        'drf_yasg.inspectors.RelatedFieldInspector',
-        'drf_yasg.inspectors.SerializerMethodFieldInspector',
-        'drf_yasg.inspectors.SimpleFieldInspector',
-        'drf_yasg.inspectors.StringDefaultFieldInspector',
+    "DEFAULT_AUTO_SCHEMA_CLASS": "drf_yasg.inspectors.SwaggerAutoSchema",
+    "DEFAULT_FIELD_INSPECTORS": [
+        "drf_yasg.inspectors.CamelCaseJSONFilter",
+        "drf_yasg.inspectors.RecursiveFieldInspector",
+        "drf_yasg.inspectors.ReferencingSerializerInspector",
+        "drf_yasg.inspectors.ChoiceFieldInspector",
+        "drf_yasg.inspectors.FileFieldInspector",
+        "drf_yasg.inspectors.DictFieldInspector",
+        "drf_yasg.inspectors.JSONFieldInspector",
+        "drf_yasg.inspectors.HiddenFieldInspector",
+        "drf_yasg.inspectors.RelatedFieldInspector",
+        "drf_yasg.inspectors.SerializerMethodFieldInspector",
+        "drf_yasg.inspectors.SimpleFieldInspector",
+        "drf_yasg.inspectors.StringDefaultFieldInspector",
     ],
-    'DEFAULT_FILTER_INSPECTORS': [
-        'drf_yasg.inspectors.CoreAPICompatInspector',
+    "DEFAULT_FILTER_INSPECTORS": [
+        "drf_yasg.inspectors.CoreAPICompatInspector",
     ],
-    'DEFAULT_PAGINATOR_INSPECTORS': [
-        'drf_yasg.inspectors.DjangoRestResponsePagination',
-        'drf_yasg.inspectors.CoreAPICompatInspector',
+    "DEFAULT_PAGINATOR_INSPECTORS": [
+        "drf_yasg.inspectors.DjangoRestResponsePagination",
+        "drf_yasg.inspectors.CoreAPICompatInspector",
     ],
 }
 
@@ -204,7 +206,9 @@ STATIC_URL = "static/"
 
 # media files
 MEDIA_URL = "/images/"
-MEDIA_ROOT = os.path.join(BASE_DIR,)
+MEDIA_ROOT = os.path.join(
+    BASE_DIR,
+)
 
 # CORS_ORIGIN_ALLOW_ALL = True
 
