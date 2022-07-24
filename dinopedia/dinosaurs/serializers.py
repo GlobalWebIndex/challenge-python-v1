@@ -24,16 +24,21 @@ class DinosaurSerializer(serializers.ModelSerializer):
         model = Dinosaur
         fields = "__all__"
         depth = 1
-        read_only_fields = ["image1", "image2"]
+        # read_only_fields = ["image1", "image2"]
 
-class DinosaurImage1Serializer(serializers.ModelSerializer):   
-        class Meta:
-            model = Dinosaur
-            fields = ["image1"]
 
+class DinosaurSerializerWrite(DinosaurSerializer):
+    class Meta(DinosaurSerializer.Meta):
+        depth = 0
+
+
+class DinosaurImage1Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dinosaur
+        fields = ["image1"]
 
 
 class DinosaurImage2Serializer(serializers.ModelSerializer):
-        class Meta:
-            model = Dinosaur
-            fields = ["image2"]
+    class Meta:
+        model = Dinosaur
+        fields = ["image2"]

@@ -2,9 +2,10 @@ from rest_framework import decorators, parsers, response, status, viewsets
 
 from dinosaurs.models import Dinosaur
 from dinosaurs.serializers import (
-    DinosaurSerializer,
     DinosaurImage1Serializer,
     DinosaurImage2Serializer,
+    DinosaurSerializer,
+    DinosaurSerializerWrite,
 )
 
 # from rest_framework.filters import OrderingFilter
@@ -32,6 +33,14 @@ class DinosaurViewSet(viewsets.ModelViewSet):
     """
     API endpoint Dinosaur.
     """
+
+    # different serializers in Read and Write
+    def get_serializer_class(self):
+        method = self.request.method
+        if method in ["PUT", "PATCH", "POST"]:
+            return DinosaurSerializerWrite
+        else:
+            return DinosaurSerializer
 
     queryset = Dinosaur.objects.all()
     serializer_class = DinosaurSerializer
@@ -75,7 +84,7 @@ class DinosaurViewSet(viewsets.ModelViewSet):
 
     @decorators.action(
         detail=True,
-        methods=[" GET, PATCH"],
+        methods=["GET", "PATCH"],
         serializer_class=DinosaurImage1Serializer,
         parser_classes=[parsers.MultiPartParser],
     )
@@ -86,18 +95,23 @@ class DinosaurViewSet(viewsets.ModelViewSet):
             data=request.data,
             partial=True,
         )
+        # serializer.validated_data
         if serializer.is_valid():
-            serializer.save()
+            serializer.validated_data
+            try:
+                serializer.save()
+            except ValueError:
+                return response.Response({"detail": "Serializer is not valid"}, status=400)
             return response.Response(serializer.data)
         return response.Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
     @decorators.action(
         detail=True,
-        methods=["GET, PATCH"],
+        methods=["GET", "PATCH"],
         serializer_class=DinosaurImage2Serializer,
         parser_classes=[parsers.MultiPartParser],
     )
-    def density_heat_map(self, request, pk):
+    def image2(self, request, pk):
         obj = self.get_object()
         serializer = self.serializer_class(
             obj,
