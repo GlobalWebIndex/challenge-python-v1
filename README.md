@@ -74,8 +74,114 @@ As a developer you’d like to Integrate with the application and have the abili
 * Like your favourite (Optional)
 * See your favourites (Optional)
 
+### Technical approach
 
-## Technical requirements for teh exercise
+We use django rest framework (DRF) in conjuction django-filters to filter and order the Dinosaurs
+
+Additionally, the drf-yasg package is included to create API documentation (Swagget and Redoc) dynamically
+
+### Developers Task
+
+The developer can find all dinosaur by using the API endpoint
+api/dinosaurs
+
+The response proviades all the available data for the dinosaur, as well as for details for the period, size and eating type. Below find and example of a response with one dinosaur
+
+<details><summary>api/dinosaurs response</summary>
+<p>
+
+```json
+
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 2,
+            "image1": "http://127.0.0.1:8001/images/images/Dino%20API/fausto-garcia-menendez-hYKG311mff8-unsplash.jpg",
+            "image2": "http://127.0.0.1:8001/images/images/Dino%20API/jon-butterworth-_BJVJ4WcV1M-unsplash.jpg",
+            "name": "Dino API",
+            "description": "A dinosaur to the the API",
+            "typical_colours": [
+                "yellow",
+                "orange"
+            ],
+            "period": {
+                "id": 3,
+                "name": "api period",
+                "start_year": 1000,
+                "end_year": 900,
+                "description": "to test with API"
+            },
+            "size": {
+                "id": 4,
+                "size": "VL",
+                "height_min": 40.0,
+                "height_max": 50.0,
+                "length_min": 7.0,
+                "length_max": 10.0,
+                "width_min": 3.0,
+                "width_max": 4.0,
+                "weight_min": 120.0,
+                "weight_max": 320.0
+            },
+            "eating_type": {
+                "id": 3,
+                "eating_type": "C",
+                "description": "MEAAAAAT"
+            }
+        }
+    ]
+}
+```
+
+</p>
+</details>
+
+Finally, the developer can click on the url for the image to see it. 
+
+(_Detail_ / _TODO_: a better practice would be to hold the folder images a folder media which would allow to keep our other types of files more tidy.)
+
+#### Filtering
+More specifically he can filter them according to the following criteria:
+- name
+- period; name of the period, start year, and end_year
+- size; type, height (min and max), weight(min and max)
+- eating_type; C for Carnivore, H for Herbivore, O for omnivore
+- description
+
+To filter add at the end of the endpoint
+ ?<field>=<value>
+
+TODO: give examples
+
+
+#### Ordering
+
+The developer can also order the dinosaurs by:
+- name
+- size
+- size__height_min
+- size__height_max
+- size__weight_min
+- size__weight_max
+- period__start_year
+- period__end_year
+
+To order add at the end of the endpoint ?ordering=<field>
+By default the ordering is ascending; with ?ordering=<-field> the order is descending.
+
+### YASG - Yet Another Swagger Generator
+
+The libary yasg facilitates the creation of the API Documenation dynamically
+The user can browse to the endpoints:
+- swagger
+- redoc
+
+and get a good idea on how to use the API.
+
+## Technical requirements for the exercise
 
 We would like you to try and present a well written solution that will cover the above criteria. Utilising the following points
 * Python 3.*
