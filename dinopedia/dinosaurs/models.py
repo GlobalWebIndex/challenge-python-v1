@@ -67,10 +67,10 @@ class DinoSize(models.Model):
 
     #
     height_min = models.FloatField(
-        null=False, blank=False, validators=[MinValueValidator(0.001)]
+        default=1.0,null=False, blank=False, validators=[MinValueValidator(0.001)]
     )
     height_max = models.FloatField(
-        null=False, blank=False, validators=[MinValueValidator(0.001)]
+        default=100.0,null=False, blank=False, validators=[MinValueValidator(0.001)]
     )
 
     #
@@ -111,10 +111,22 @@ class DinoSize(models.Model):
                 name="max_length_gt_min",
             ),
             models.CheckConstraint(
+                check=models.Q(length_max__gte=0), name="lenght_max_positive"
+            ),
+            models.CheckConstraint(
+                check=models.Q(length_min__gte=0), name="lenght_min_positive"
+            ),
+            models.CheckConstraint(
                 check=Q(
                     height_max__gt=F("height_min"),
                 ),
                 name="max_height_gt_min",
+            ),
+            models.CheckConstraint(
+                check=models.Q(height_max__gte=0), name="height_max_positive"
+            ),
+            models.CheckConstraint(
+                check=models.Q(height_min__gte=0), name="height_min_positive"
             ),
             models.CheckConstraint(
                 check=Q(
@@ -122,11 +134,23 @@ class DinoSize(models.Model):
                 ),
                 name="max_width_gt_min",
             ),
+             models.CheckConstraint(
+                check=models.Q(width_max__gte=0), name="width_max_positive"
+            ),
+            models.CheckConstraint(
+                check=models.Q(width_min__gte=0), name="width_min_positive"
+            ),
             models.CheckConstraint(
                 check=Q(
                     weight_max__gt=F("weight_min"),
                 ),
                 name="max_weight_gt_min",
+            ),
+            models.CheckConstraint(
+                check=models.Q(weight_max__gte=0), name="weight_max_positive"
+            ),
+            models.CheckConstraint(
+                check=models.Q(weight_min__gte=0), name="weight_min_positive"
             ),
         ]
 
