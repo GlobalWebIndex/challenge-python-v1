@@ -16,6 +16,7 @@ drf-yasg = "^1.21.3"
 django-filter = "^22.1"
 model-bakery = "^1.6.0"
 pytest-django = "^4.5.2"
+django-cors-headers = "^3.13.0"
 
 
 [tool.poetry.dev-dependencies]
