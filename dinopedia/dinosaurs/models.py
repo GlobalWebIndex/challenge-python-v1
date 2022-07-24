@@ -139,7 +139,7 @@ class EatingType(models.Model):
         HERBIVORE = "H", _("Herbivore")
         OMNIVORE = "O", _("Omnivore")
 
-    eating = models.CharField(
+    eating_type = models.CharField(
         max_length=15,
         choices=EatingCategory.choices,
         null=False,
@@ -149,12 +149,12 @@ class EatingType(models.Model):
     description = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.eating}"
+        return f"{self.eating_type}"
 
     class Meta:
-        ordering = ["eating"]
+        ordering = ["eating_type"]
         constraints = [
-            models.UniqueConstraint(fields=["eating"], name="unique_eating_type"),
+            models.UniqueConstraint(fields=["eating_type"], name="unique_eating_type"),
         ]
 
 def image_directory_path(instance, filename):
@@ -173,7 +173,7 @@ class Dinosaur(models.Model):
     name = models.CharField(null=False,max_length=250)
     period = models.ForeignKey(Period,null=True, blank=True, on_delete=models.SET_NULL)
     size = models.ForeignKey(DinoSize,null=True, blank=True, on_delete=models.SET_NULL)
-    eating = models.ForeignKey(EatingType,null=True, blank=True, on_delete=models.SET_NULL)
+    eating_type = models.ForeignKey(EatingType,null=True, blank=True, on_delete=models.SET_NULL)
     description = models.TextField(null=True, blank=True)
     #
     typical_colours = ArrayField(
@@ -193,7 +193,7 @@ class Dinosaur(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name} : {self.period} : {self.size} : {self.eating}"
+        return f"{self.name} : {self.period} : {self.size} : {self.eating_type}"
 
     class Meta:
         ordering = ["name"]
