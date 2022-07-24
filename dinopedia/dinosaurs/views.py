@@ -1,7 +1,11 @@
-from rest_framework import viewsets
+from rest_framework import decorators, parsers, response, status, viewsets
 
 from dinosaurs.models import Dinosaur
-from dinosaurs.serializers import DinosaurSerializer
+from dinosaurs.serializers import (
+    DinosaurSerializer,
+    DinosaurImage1Serializer,
+    DinosaurImage2Serializer,
+)
 
 # from rest_framework.filters import OrderingFilter
 # from django_filters import rest_framework as filters
@@ -66,4 +70,41 @@ class DinosaurViewSet(viewsets.ModelViewSet):
         "size__weight_min",
         "size__weight_max",
         "period__start_year",
+        "period__end_year",
     ]
+
+    @decorators.action(
+        detail=True,
+        methods=[" GET, PATCH"],
+        serializer_class=DinosaurImage1Serializer,
+        parser_classes=[parsers.MultiPartParser],
+    )
+    def image1(self, request, pk):
+        obj = self.get_object()
+        serializer = self.serializer_class(
+            obj,
+            data=request.data,
+            partial=True,
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data)
+        return response.Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+    @decorators.action(
+        detail=True,
+        methods=["GET, PATCH"],
+        serializer_class=DinosaurImage2Serializer,
+        parser_classes=[parsers.MultiPartParser],
+    )
+    def density_heat_map(self, request, pk):
+        obj = self.get_object()
+        serializer = self.serializer_class(
+            obj,
+            data=request.data,
+            partial=True,
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data)
+        return response.Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
