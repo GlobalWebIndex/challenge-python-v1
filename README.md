@@ -58,6 +58,8 @@ More specifically, the admin can create:
 
 The admin can edit or remove any of the above in the admin site.
 
+#### TODO
+
 There is one exception : remove the image from the admin site.
 
 ### Roadmap
@@ -76,7 +78,7 @@ As a developer you’d like to Integrate with the application and have the abili
 
 ### Technical approach
 
-We use django rest framework (DRF) in conjuction django-filters to filter and order the Dinosaurs
+We use django rest framework (DRF) in conjuction django-filters to filter and order the Dinosaurs.
 
 Additionally, the drf-yasg package is included to create API documentation (Swagget and Redoc) dynamically
 
@@ -191,7 +193,7 @@ We would like you to try and present a well written solution that will cover the
 * Testing suite
 * README
 
-## More point for 
+## More points for 
 
 Get creative as much as you want, we WILL appreciate it. You will not be evaluated based on how well you follow these instructions, but based on how sensible your solution will be. In case you are not able to implement something you would normally implement for time reasons, make it clear with a comment.
 
