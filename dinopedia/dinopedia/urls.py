@@ -22,6 +22,7 @@ from django.urls import include, path, re_path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions, routers
+from dinosaurs import views
 
 admin.site.site_header = "Dinosaurs Index"
 admin.site.site_title = admin.site.site_header
@@ -33,6 +34,13 @@ router.register("dinosaurs", DinosaurViewSet, "dinosaurs")
 urlpatterns = [
     # path("dinosaurs/", include("dinosaurs.urls")),
     path("api/", include(router.urls)),
+
+
+    path(
+        "api/dinosaurs/<pk>/images1",
+        views.DinosaurViewSet.as_view({"patch": "retrieve"}),
+        name="dinosaur-related",
+    ),
     path("admin/", admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
