@@ -10,7 +10,12 @@ from pytz import timezone
 
 
 # no foreign keys - do not need specific order
-period_recipe = Recipe(Period, name=seq("Period "))
+period_recipe = Recipe(
+    Period,
+    name=seq("Period "),
+    start_year=2000,
+    end_year=1900,
+)
 size_recipe = Recipe(DinoSize)
 eat_recipe = Recipe(EatingType)
 
@@ -22,5 +27,3 @@ dinosaur_recipe = Recipe(
     size=foreign_key(size_recipe),
     eating_type=foreign_key(eat_recipe),
 )
-
-
