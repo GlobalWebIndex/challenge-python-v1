@@ -3,19 +3,25 @@ import pytest
 from model_bakery import baker
 from dinosaurs.models import Dinosaur
 
-
+BAKERPATH = "tests.test_dinopedia.test_dinosaurs.baker_recipes"
 class TestDinosaurEndpoint:
 
-    # url is set to block but the name to blocks
+    #
     endpoint = "/api/dinosaurs"
+    #
+    recipe = "dinosaur_recipe"
+    booking_recipe = f"{BAKERPATH}.{recipe}"
 
     @pytest.mark.django_db
     def test_list(self, api_client, admin):
 
-        quantity = 1
-        baker.make(Dinosaur, _quantity = quantity)
+        quantity = 2
+        baker.make_recipe(self.booking_recipe, _quantity = quantity)
         response = api_client.get(self.endpoint)
-        data = json.loads(response.content)["results"]
+        results = json.loads(response.content)["results"]
 
         assert response.status_code == 200
-        assert len(data) == quantity
+        assert len(results) == quantity
+
+    # TODO test to do conflicts
+    # TODO test to put, patch, delete
