@@ -145,12 +145,17 @@ Finally, the developer can click on the url for the image to see it.
 
 (_Detail_ / _TODO_: a better practice would be to hold the folder images a folder media which would allow to keep our other types of files more tidy.)
 
+#### PUT PATCH
+
+Through the API the user can also update the dinosaur details 
+- the update of the image which is still a work in progress.
+
 #### Filtering
 More specifically he can filter them according to the following criteria:
 - name
 - period; name of the period, start year, and end_year
 - size; type, height (min and max), weight(min and max)
-- eating_type; C for Carnivore, H for Herbivore, O for omnivore
+- eating_type; 'C' for Carnivore, 'H' for Herbivore, 'O' for omnivore.
 - description
 
 To filter add at the end of the endpoint
@@ -182,6 +187,16 @@ The user can browse to the endpoints:
 - redoc
 
 and get a good idea on how to use the API.
+
+### Testing
+
+The Pytest suite is used and some basic tests have been deployed for the API functionallity
+- get
+- delete
+
+Also, the constraint of unique dinosaur name has been in the tests as well.
+
+To create instances for the fictional database we use the package model-bakery.
 
 ## Technical requirements for the exercise
 
