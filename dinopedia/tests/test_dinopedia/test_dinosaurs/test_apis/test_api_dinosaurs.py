@@ -1,9 +1,12 @@
 import json
 import pytest
 from model_bakery import baker
+from typing import List
 from dinosaurs.models import Dinosaur
 
 BAKERPATH = "tests.test_dinopedia.test_dinosaurs.baker_recipes"
+
+
 class TestDinosaurEndpoint:
 
     #
@@ -15,15 +18,17 @@ class TestDinosaurEndpoint:
     @pytest.mark.django_db
     def test_list(self, api_client, admin):
 
+        #
         quantity = 2
-        baker.make_recipe(self.dino_recipe, _quantity = quantity)
+        baker.make_recipe(self.dino_recipe, _quantity=quantity)
+
+        #
         response = api_client.get(self.endpoint)
         results = json.loads(response.content)["results"]
 
         assert response.status_code == 200
         assert len(results) == quantity
 
-    
     @pytest.mark.django_db
     def test_integrity_error_for_dinos_with_the_same_name(self, api_client, admin):
         """
@@ -39,8 +44,11 @@ class TestDinosaurEndpoint:
                 name="Dinosaur 1",
             )
         assert "ExceptionInfo IntegrityError" in str(excinfo)
-        assert 'duplicate key value violates unique constraint "unique_dinosaur_name"' in excinfo.value.args[0]
-    
+        assert (
+            'duplicate key value violates unique constraint "unique_dinosaur_name"'
+            in excinfo.value.args[0]
+        )
+
     # TODO create tests for every orther conflict
 
     # TODO test to put, patch, delete
@@ -50,16 +58,85 @@ class TestDinosaurEndpoint:
 
         # make 2
         quantity = 2
-        results = baker.make_recipe(self.dino_recipe, _quantity = quantity)
+        results = baker.make_recipe(self.dino_recipe, _quantity=quantity)
 
         # delete 1
         response = api_client.delete(f"{self.endpoint}/{results[0].id}")
 
         assert response.status_code == 204
-        
+
         # check that we have one left
         response = api_client.get(self.endpoint)
         results = json.loads(response.content)["results"]
 
         assert response.status_code == 200
-        assert len(results) == quantity-1
+        assert len(results) == quantity - 1
+
+    @pytest.mark.django_db
+    def test_post(self, api_client, admin):
+
+        #
+        period = create_("period")
+        period_id = period[0].id
+        #
+        size = create_("size")
+        size_id = size[0].id
+        #
+        eat = create_("eat")
+        eating_type_id = eat[0].id
+
+        #
+        colours = ["red", "blue", "green"]        
+
+        payload = {
+            "name": "Dino POST",
+            "description": "ad description",
+            "typical_colours": colours,
+            "period": period_id,
+            "size": size_id,
+            "eating_type": eating_type_id,
+        }
+
+        # post request
+        response = api_client.post(self.endpoint, payload)
+        # results
+        content = json.loads(response.content)
+
+        assert response.status_code == 201
+
+    @pytest.mark.django_db
+    def test_patch_colours(self, api_client, admin):
+        #
+        quantity = 2
+        dinos = create_("dinosaur", quantity)
+
+        dino_id = dinos[0].id
+
+        # typical colours is [black] in the recipe
+        # we patch to white
+        payload = {
+            "typical_colours": ["white"],
+        }
+
+        # patch request
+        url = f"{self.endpoint}/{dino_id}"
+        response = api_client.patch(url, payload)
+        # results
+        content = json.loads(response.content)
+
+        assert response.status_code == 200
+        assert content["typical_colours"] == ["white"]
+
+
+def create_(arg_: str, quantity: int =1)-> List:
+    """utility function to create a model and return a list of objects
+
+    Args:
+        arg_ (_type_): the model to create
+        quantity (int, optional): amount of models. Defaults to 1.
+
+    Returns: list of the created models
+    """
+    recipe = f"{BAKERPATH}.{arg_}_recipe"
+    creation = baker.make_recipe(recipe, _quantity=quantity)
+    return creation

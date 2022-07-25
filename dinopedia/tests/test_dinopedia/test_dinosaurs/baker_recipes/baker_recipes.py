@@ -23,6 +23,7 @@ eat_recipe = Recipe(EatingType)
 dinosaur_recipe = Recipe(
     Dinosaur,
     name=seq("Dino "),
+    typical_colours = ["black"],
     period=foreign_key(period_recipe),
     size=foreign_key(size_recipe),
     eating_type=foreign_key(eat_recipe),
