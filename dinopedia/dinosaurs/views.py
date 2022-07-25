@@ -1,7 +1,9 @@
 from rest_framework import decorators, parsers, response, status, viewsets
 
-from dinosaurs.models import Dinosaur, PetDinosaur
+from dinosaurs.models import DinoOwner, Dinosaur, PetDinosaur
 from dinosaurs.serializers import (
+    DinoOwnerSerializerRead,
+    DinoOwnerSerializerWrite,
     DinosaurImage1Serializer,
     DinosaurImage2Serializer,
     DinosaurSerializer,
@@ -179,3 +181,18 @@ class PetDinosaurViewSet(viewsets.ModelViewSet):
         "weight",
         "age",
     ]
+
+
+class DinoOwnerViewSet(viewsets.ModelViewSet):
+    # different serializers in Read and Write
+    def get_serializer_class(self):
+        method = self.request.method
+        if method in ["PUT", "PATCH", "POST"]:
+            return DinoOwnerSerializerWrite
+        else:
+            return DinoOwnerSerializerRead
+
+    queryset = DinoOwner.objects.all()
+    serializer_class = DinoOwnerSerializerRead
+
+    # filter with pet_name and number of liked dinosaurs

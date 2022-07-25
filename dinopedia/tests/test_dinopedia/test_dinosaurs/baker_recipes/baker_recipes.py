@@ -37,4 +37,8 @@ petDinosaur_recipe = Recipe(
     age = seq(1, 2),
 )
 
+dinoOwner_recipe = Recipe(
+    DinoOwner,
+    nickname=seq("Ash Ketchum ")
+)
 

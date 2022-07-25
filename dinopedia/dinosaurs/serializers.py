@@ -46,17 +46,24 @@ class DinosaurImage2Serializer(serializers.ModelSerializer):
         fields = ["image2"]
 
 
-
-class DinoOwnerSerializer(serializers.ModelSerializer):
+class DinoOwnerSerializerWrite(serializers.ModelSerializer):
     class Meta:
         model = DinoOwner
         fields = "__all__"
+
+
+class DinoOwnerSerializerRead(DinoOwnerSerializerWrite):
+
+    liked_dinosaurs = DinosaurSerializer(many=True)
+    class Meta(DinoOwnerSerializerWrite.Meta):
         depth = 1
+
 
 class PetDinosaurSerializerWrite(serializers.ModelSerializer):
     class Meta:
         model = PetDinosaur
         fields = "__all__"
+
 
 class PetDinosaurSerializerRead(PetDinosaurSerializerWrite):
 
@@ -69,5 +76,5 @@ class PetDinosaurSerializerRead(PetDinosaurSerializerWrite):
 
     def get_owner(self, obj):
         owner = DinoOwner.objects.filter(petDino=obj).first()
-        owner_data = DinoOwnerSerializer(owner).data
+        owner_data = DinoOwnerSerializerRead(owner).data
         return owner_data
