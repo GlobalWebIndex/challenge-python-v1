@@ -212,7 +212,7 @@ MEDIA_ROOT = os.path.join(
     BASE_DIR,
 )
 
-# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Default primary key field type
