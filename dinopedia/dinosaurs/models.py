@@ -266,7 +266,7 @@ class DinoOwner(models.Model):
     petDino = models.ForeignKey(
         PetDinosaur, null=True, blank=True, on_delete=models.SET_NULL
     )
-    liked_dinosaurs = models.ManyToManyField(Dinosaur)
+    liked_dinosaurs = models.ManyToManyField(Dinosaur, blank=True)
 
     def __str__(self):
         return f"{self.nickname} owns {self.petDino}"
