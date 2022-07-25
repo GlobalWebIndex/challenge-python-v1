@@ -1,9 +1,11 @@
 from rest_framework import serializers
 
-from dinosaurs.models import Dinosaur
+from dinosaurs.models import Dinosaur, DinoOwner, PetDinosaur
 
 
 class DinosaurSerializer(serializers.ModelSerializer):
+
+    # add liked_by
 
     image1 = serializers.ImageField(
         max_length=None,
@@ -42,3 +44,30 @@ class DinosaurImage2Serializer(serializers.ModelSerializer):
     class Meta:
         model = Dinosaur
         fields = ["image2"]
+
+
+
+class DinoOwnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DinoOwner
+        fields = "__all__"
+        depth = 1
+
+class PetDinosaurSerializerWrite(serializers.ModelSerializer):
+    class Meta:
+        model = PetDinosaur
+        fields = "__all__"
+
+class PetDinosaurSerializerRead(PetDinosaurSerializerWrite):
+
+    owner = serializers.SerializerMethodField()
+
+    dino_type = DinosaurSerializer(read_only=True)
+
+    class Meta(PetDinosaurSerializerWrite.Meta):
+        depth = 1
+
+    def get_owner(self, obj):
+        owner = DinoOwner.objects.filter(petDino=obj).first()
+        owner_data = DinoOwnerSerializer(owner).data
+        return owner_data

@@ -5,8 +5,9 @@ from dinosaurs.models import (
     Period,
     EatingType,
     DinoSize,
+    PetDinosaur,
 )
-from pytz import timezone
+
 
 
 # no foreign keys - do not need specific order
@@ -28,3 +29,12 @@ dinosaur_recipe = Recipe(
     size=foreign_key(size_recipe),
     eating_type=foreign_key(eat_recipe),
 )
+petDinosaur_recipe = Recipe(
+    PetDinosaur,
+    dino_type = foreign_key(dinosaur_recipe),
+    pet_name=seq("PetDino "),
+    colour = "flashy colours",
+    age = seq(1, 2),
+)
+
+

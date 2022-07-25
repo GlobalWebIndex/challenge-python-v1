@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from dinosaurs.views import DinosaurViewSet
+from dinosaurs.views import DinosaurViewSet, PetDinosaurViewSet
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
@@ -22,7 +22,7 @@ from django.urls import include, path, re_path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions, routers
-from dinosaurs import views
+# from dinosaurs import views
 
 admin.site.site_header = "Dinosaurs Index"
 admin.site.site_title = admin.site.site_header
@@ -30,6 +30,8 @@ admin.site.site_title = admin.site.site_header
 router = routers.DefaultRouter(trailing_slash=False)
 
 router.register("dinosaurs", DinosaurViewSet, "dinosaurs")
+router.register("petdinosaurs", PetDinosaurViewSet, "petdinosaurs")
+
 
 urlpatterns = [
     # path("dinosaurs/", include("dinosaurs.urls")),
@@ -38,7 +40,7 @@ urlpatterns = [
 
     path(
         "api/dinosaurs/<pk>/images1",
-        views.DinosaurViewSet.as_view({"patch": "retrieve"}),
+        DinosaurViewSet.as_view({"patch": "retrieve"}),
         name="dinosaur-related",
     ),
     path("admin/", admin.site.urls),

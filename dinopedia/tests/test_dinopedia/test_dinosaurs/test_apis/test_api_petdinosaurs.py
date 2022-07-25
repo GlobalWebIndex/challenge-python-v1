@@ -1,27 +1,25 @@
 import json
 import pytest
 from model_bakery import baker
-from typing import List
-from dinosaurs.models import Dinosaur
 from .utils import create_
 
 BAKERPATH = "tests.test_dinopedia.test_dinosaurs.baker_recipes"
 
 
-class TestDinosaurEndpoint:
+class TestPetDinosaurEndpoint:
 
     #
-    endpoint = "/api/dinosaurs"
+    endpoint = "/api/petdinosaurs"
     #
-    recipe = "dinosaur_recipe"
-    dino_recipe = f"{BAKERPATH}.{recipe}"
+    recipe = "petDinosaur_recipe"
+    petdino_recipe = f"{BAKERPATH}.{recipe}"
 
     @pytest.mark.django_db
     def test_list(self, api_client, admin):
 
         #
         quantity = 2
-        baker.make_recipe(self.dino_recipe, _quantity=quantity)
+        baker.make_recipe(self.petdino_recipe, _quantity=quantity)
 
         #
         response = api_client.get(self.endpoint)
@@ -31,34 +29,33 @@ class TestDinosaurEndpoint:
         assert len(results) == quantity
 
     @pytest.mark.django_db
-    def test_integrity_error_for_dinos_with_the_same_name(self, api_client, admin):
+    def test_integrity_error_for_petdinos_with_the_same_name_and_colour(self, api_client, admin):
         """
-        Two dinosqurs cannot have the same name
+        Two pet dinosaurs cannot have the same name and colour
         """
         with pytest.raises(Exception) as excinfo:
             dino1 = baker.make_recipe(
-                self.dino_recipe,
-                name="Dinosaur 1",
+                self.petdino_recipe,
+                pet_name="Dinosaur 1",
             )
             dino2 = baker.make_recipe(
-                self.dino_recipe,
-                name="Dinosaur 1",
+                self.petdino_recipe,
+                pet_name="Dinosaur 1",
             )
         assert "ExceptionInfo IntegrityError" in str(excinfo)
         # assert (
-        #     'duplicate key value violates unique constraint "unique_dinosaur_name"'
+        #     'duplicate key value violates unique constraint "unique_name_colour"'
         #     in excinfo.value.args[0]
         # )
 
     # TODO create tests for every orther conflict
-
 
     @pytest.mark.django_db
     def test_delete(self, api_client, admin):
 
         # make 2
         quantity = 2
-        results = baker.make_recipe(self.dino_recipe, _quantity=quantity)
+        results = create_("petDinosaur", quantity)
 
         # delete 1
         response = api_client.delete(f"{self.endpoint}/{results[0].id}")
@@ -76,25 +73,23 @@ class TestDinosaurEndpoint:
     def test_create(self, api_client, admin):
 
         #
-        period = create_("period")
-        period_id = period[0].id
-        #
-        size = create_("size")
-        size_id = size[0].id
-        #
-        eat = create_("eat")
-        eating_type_id = eat[0].id
+        dinosaur = create_("petDinosaur")
+        dinosaur_id = dinosaur[0].id
 
         #
-        colours = ["red", "blue", "green"]        
+        colour = "white"
 
         payload = {
-            "name": "Dino POST",
-            "description": "ad description",
-            "typical_colours": colours,
-            "period": period_id,
-            "size": size_id,
-            "eating_type": eating_type_id,
+            "dino_type": dinosaur_id,
+            "pet_name": "WaterMelon",
+            "age": 1,
+            "height": 0.001,
+            "length": 0.001,
+            "width": 0.001,
+            "weight": 0.001,
+            "colour": colour,
+            "diet": "water",
+            "pet_description": "this is a dino who drinks only water",
         }
 
         # post request
@@ -108,14 +103,14 @@ class TestDinosaurEndpoint:
     def test_patch_colours(self, api_client, admin):
         #
         quantity = 2
-        dinos = create_("dinosaur", quantity)
+        dinos = create_("petDinosaur", quantity)
 
         dino_id = dinos[0].id
 
         # typical colours is [black] in the recipe
         # we patch to white
         payload = {
-            "typical_colours": ["white"],
+            "colour": "white",
         }
 
         # patch request
@@ -125,7 +120,4 @@ class TestDinosaurEndpoint:
         content = json.loads(response.content)
 
         assert response.status_code == 200
-        assert content["typical_colours"] == ["white"]
-
-
-
+        assert content["colour"] == "white"
