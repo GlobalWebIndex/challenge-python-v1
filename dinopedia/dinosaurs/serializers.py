@@ -5,7 +5,8 @@ from dinosaurs.models import Dinosaur, DinoOwner, PetDinosaur
 
 class DinosaurSerializer(serializers.ModelSerializer):
 
-    # add liked_by
+    # liked count and by which owner
+    likes_count_by = serializers.SerializerMethodField()
 
     image1 = serializers.ImageField(
         max_length=None,
@@ -28,6 +29,19 @@ class DinosaurSerializer(serializers.ModelSerializer):
         depth = 1
         # read_only_fields = ["image1", "image2"]
 
+
+    def get_likes_count_by(self, obj):
+        """TODO: find something smarter"""
+        liked_by = []
+        likes_count = 0
+        for dinoOwner in DinoOwner.objects.all():
+            liked_dinos = dinoOwner.liked_dinosaurs.all()
+            for liked_dino in liked_dinos:
+                if obj.name in liked_dino.name:
+                    likes_count += 1
+                    liked_by.append((dinoOwner.id, dinoOwner.nickname,))
+
+        return (likes_count, liked_by,)
 
 class DinosaurSerializerWrite(DinosaurSerializer):
     class Meta(DinosaurSerializer.Meta):
