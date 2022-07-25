@@ -72,8 +72,8 @@ class TestPetDinosaurEndpoint:
     @pytest.mark.django_db
     def test_create(self, api_client, admin):
 
-        #
-        dinosaur = create_("petDinosaur")
+        # create dinosaur type
+        dinosaur = create_("dinosaur")
         dinosaur_id = dinosaur[0].id
 
         #
@@ -81,7 +81,7 @@ class TestPetDinosaurEndpoint:
 
         payload = {
             "dino_type": dinosaur_id,
-            "pet_name": "WaterMelon",
+            "pet_name": "WaterMelon2",
             "age": 1,
             "height": 0.001,
             "length": 0.001,
