@@ -1,15 +1,10 @@
+from django.contrib.auth.models import User
+from django.contrib.postgres.fields import ArrayField
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import F, Q
 from django.utils.translation import gettext_lazy as _
-from django.core.validators import MaxValueValidator, MinValueValidator
-from django.contrib.postgres.fields import ArrayField
 
-
-class DinoOwner(models.Model):
-    name = models.TextField(null=False)
-
-    def __str__(self):
-        return self.name
 
 class Period(models.Model):
     """Years are in BC, so the start year is always greater than the end year
@@ -17,7 +12,7 @@ class Period(models.Model):
     deliberately not in a choices field in case we want to add something new!!!
     """
 
-    name = models.CharField(null=False,max_length=15)
+    name = models.CharField(null=False, max_length=15)
     start_year = models.IntegerField(null=False)
     end_year = models.IntegerField(null=False)
     description = models.TextField(null=True, blank=True)
@@ -67,10 +62,10 @@ class DinoSize(models.Model):
 
     #
     height_min = models.FloatField(
-        default=1.0,null=False, blank=False, validators=[MinValueValidator(0.001)]
+        default=1.0, null=False, blank=False, validators=[MinValueValidator(0.001)]
     )
     height_max = models.FloatField(
-        default=100.0,null=False, blank=False, validators=[MinValueValidator(0.001)]
+        default=100.0, null=False, blank=False, validators=[MinValueValidator(0.001)]
     )
 
     #
@@ -134,7 +129,7 @@ class DinoSize(models.Model):
                 ),
                 name="max_width_gt_min",
             ),
-             models.CheckConstraint(
+            models.CheckConstraint(
                 check=models.Q(width_max__gte=0), name="width_max_positive"
             ),
             models.CheckConstraint(
@@ -181,6 +176,7 @@ class EatingType(models.Model):
             models.UniqueConstraint(fields=["eating_type"], name="unique_eating_type"),
         ]
 
+
 def image_directory_path(instance, filename):
     """
     where the images will be stored
@@ -189,32 +185,33 @@ def image_directory_path(instance, filename):
     # period = instance.timestamp # could use also period to further put the image
 
     return f"images/{folder_name}/{filename}"
+
+
 class Dinosaur(models.Model):
     """
     A dinosaur is a living thing that lived in the past.
     """
 
-    name = models.CharField(null=False,max_length=250)
-    period = models.ForeignKey(Period,null=True, blank=True, on_delete=models.SET_NULL)
-    size = models.ForeignKey(DinoSize,null=True, blank=True, on_delete=models.SET_NULL)
-    eating_type = models.ForeignKey(EatingType,null=True, blank=True, on_delete=models.SET_NULL)
+    name = models.CharField(null=False, max_length=250)
+    period = models.ForeignKey(Period, null=True, blank=True, on_delete=models.SET_NULL)
+    size = models.ForeignKey(DinoSize, null=True, blank=True, on_delete=models.SET_NULL)
+    eating_type = models.ForeignKey(
+        EatingType, null=True, blank=True, on_delete=models.SET_NULL
+    )
     description = models.TextField(null=True, blank=True)
     #
     typical_colours = ArrayField(
         models.CharField(
-            max_length=12, null=True,
+            max_length=12,
+            null=True,
         ),
         size=4,
         null=True,
     )
 
     # TODO add delete images if the dinosaur is deleted
-    image1 = models.ImageField(
-        upload_to=image_directory_path, default="img1.jpg"
-    )
-    image2 = models.ImageField(
-        upload_to=image_directory_path, default="img2.jpg"
-    )
+    image1 = models.ImageField(upload_to=image_directory_path, default="img1.jpg")
+    image2 = models.ImageField(upload_to=image_directory_path, default="img2.jpg")
 
     def __str__(self):
         return f"{self.name} : {self.period} : {self.size} : {self.eating_type}"
@@ -223,4 +220,59 @@ class Dinosaur(models.Model):
         ordering = ["name"]
         constraints = [
             models.UniqueConstraint(fields=["name"], name="unique_dinosaur_name"),
+        ]
+
+class PetDinosaur(models.Model):
+    """
+    A dinosaur that is a pet.
+
+    Must have a name, a colour, and a diet
+
+    Contraint: we do not want to have two pets with the same name and colour
+    because how are we going to tell them apart?
+    """
+
+    dino_type = models.ForeignKey(Dinosaur, null=False, blank=False, on_delete=models.CASCADE)
+    pet_name = models.CharField(max_length=250, null=False)
+    age = models.IntegerField(null=False)
+    height = models.FloatField(validators=[MinValueValidator(0.001)])
+    length = models.FloatField(null=True, validators=[MinValueValidator(0.001)])
+    width = models.FloatField(null=True, validators=[MinValueValidator(0.001)])
+    weight = models.FloatField(null=True, validators=[MinValueValidator(0.001)])
+    colour = models.CharField(max_length=250, null=False)
+    diet = models.CharField(max_length=250, null=False)
+    pet_description = models.TextField(null=True)
+
+    def __str__(self):
+        dino_type = self.dino_type.name
+        return f"{self.pet_name} is a {self.colour}  {dino_type} - is a {self.diet}"
+
+    class Meta:
+        ordering = ["pet_name"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["pet_name", "colour"], name="unique_name_colour"
+            ),
+        ]
+
+
+class DinoOwner(models.Model):
+    """
+    An Owner of a dinosaur; only one because imagine if he had more
+    But he can like more kinds!
+    """
+
+    nickname = models.CharField(max_length=250, default = "awesome dino owner", null=False)
+    petDino = models.ForeignKey(
+        PetDinosaur, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    liked_dinosaurs = models.ManyToManyField(Dinosaur)
+
+    def __str__(self):
+        return f"{self.nickname} owns {self.petDino}"
+
+    class Meta:
+        ordering = ["nickname"]
+        constraints = [
+            models.UniqueConstraint(fields=["nickname"], name="unique_owner_nickname"),
         ]

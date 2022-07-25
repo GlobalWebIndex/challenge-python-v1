@@ -11,7 +11,6 @@ from enum import Enum
 
 import pytest
 from rest_framework.test import APIClient
-# from dinopedia.dinosaurs.models import User
 from django.contrib.auth.models import User
 
 
