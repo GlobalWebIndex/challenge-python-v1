@@ -12,10 +12,7 @@ from dinosaurs.serializers import (
     PetDinosaurSerializerWrite,
 )
 
-# from rest_framework.filters import OrderingFilter
-# from django_filters import rest_framework as filters
-
-
+# TODO add search functionality in general
 class FilterOperators:
     """
     Definitions of the Field lookups, see:
@@ -48,14 +45,6 @@ class DinosaurViewSet(viewsets.ModelViewSet):
 
     queryset = Dinosaur.objects.all()
     serializer_class = DinosaurSerializer
-
-    # if you want just for this class remove DEFAULT_FILTER_BACKENDS from the settings
-    # and add it here
-    # filter_backends = (
-    #     # filters.DjangoFilterBackend,
-    #     OrderingFilter,
-    # )
-    #
 
     filterset_fields = {
         "name": ("exact",) + FilterOperators.text_rels,
@@ -195,4 +184,4 @@ class DinoOwnerViewSet(viewsets.ModelViewSet):
     queryset = DinoOwner.objects.all()
     serializer_class = DinoOwnerSerializerRead
 
-    # filter with pet_name and number of liked dinosaurs
+    # TODO filter with pet_name and number of liked dinosaurs

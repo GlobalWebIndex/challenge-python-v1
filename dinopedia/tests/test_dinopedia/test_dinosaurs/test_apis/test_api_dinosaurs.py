@@ -31,29 +31,6 @@ class TestDinosaurEndpoint:
         assert len(results) == quantity
 
     @pytest.mark.django_db
-    def test_integrity_error_for_dinos_with_the_same_name(self, api_client, admin):
-        """
-        Two dinosqurs cannot have the same name
-        """
-        with pytest.raises(Exception) as excinfo:
-            dino1 = baker.make_recipe(
-                self.dino_recipe,
-                name="Dinosaur 1",
-            )
-            dino2 = baker.make_recipe(
-                self.dino_recipe,
-                name="Dinosaur 1",
-            )
-        assert "ExceptionInfo IntegrityError" in str(excinfo)
-        # assert (
-        #     'duplicate key value violates unique constraint "unique_dinosaur_name"'
-        #     in excinfo.value.args[0]
-        # )
-
-    # TODO create tests for every orther conflict
-
-
-    @pytest.mark.django_db
     def test_delete(self, api_client, admin):
 
         # make 2
@@ -127,5 +104,27 @@ class TestDinosaurEndpoint:
         assert response.status_code == 200
         assert content["typical_colours"] == ["white"]
 
+    @pytest.mark.django_db
+    def test_integrity_error_for_dinos_with_the_same_name(self, api_client, admin):
+        """
+        Two dinosqurs cannot have the same name
+        """
+        with pytest.raises(Exception) as excinfo:
+            dino1 = baker.make_recipe(
+                self.dino_recipe,
+                name="Dinosaur 1",
+            )
+            dino2 = baker.make_recipe(
+                self.dino_recipe,
+                name="Dinosaur 1",
+            )
+        assert "ExceptionInfo IntegrityError" in str(excinfo)
+        # assert (
+        #     'duplicate key value violates unique constraint "unique_dinosaur_name"'
+        #     in excinfo.value.args[0]
+        # )
 
+    # TODO create tests for every orther conflict
+
+    # TODO create tests for filters
 
