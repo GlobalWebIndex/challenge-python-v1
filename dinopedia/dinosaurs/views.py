@@ -63,7 +63,7 @@ class DinosaurViewSet(viewsets.ModelViewSet):
         #
         "description": ("exact",) + FilterOperators.text_rels,
     }
-    # ordering: add in the url ?ordering=<field> is ascenging (with -field is descending)
+
     ordering_fields = [
         "name",
         "size",
@@ -135,14 +135,6 @@ class PetDinosaurViewSet(viewsets.ModelViewSet):
     queryset = PetDinosaur.objects.all()
     serializer_class = PetDinosaurSerializerRead
 
-    # if you want just for this class remove DEFAULT_FILTER_BACKENDS from the settings
-    # and add it here
-    # filter_backends = (
-    #     # filters.DjangoFilterBackend,
-    #     OrderingFilter,
-    # )
-    #
-
     filterset_fields = {
         "dino_type__name": ("exact",) + FilterOperators.text_rels,
         "pet_name": ("exact",) + FilterOperators.text_rels,
@@ -162,7 +154,7 @@ class PetDinosaurViewSet(viewsets.ModelViewSet):
         #
         "pet_description": ("exact",) + FilterOperators.text_rels,
     }
-    # ordering: add in the url ?ordering=<field> is ascenging (with -field is descending)
+
     ordering_fields = [
         "dino_type__name",
         "pet_name",
@@ -184,4 +176,23 @@ class DinoOwnerViewSet(viewsets.ModelViewSet):
     queryset = DinoOwner.objects.all()
     serializer_class = DinoOwnerSerializerRead
 
-    # TODO filter with pet_name and number of liked dinosaurs
+    filterset_fields = {
+        "nickname": ("exact",) + FilterOperators.text_rels,
+        #
+        "petDino__pet_name": ("exact",) + FilterOperators.text_rels,
+        "petDino__age": FilterOperators.usual_rels,
+        "petDino__height": FilterOperators.usual_rels,
+        "petDino__length": FilterOperators.usual_rels,
+        "petDino__colour": ("exact",) + FilterOperators.text_rels,
+        "petDino__diet": ("exact",) + FilterOperators.text_rels,
+        #
+        "petDino__dino_type__name": ("exact",) + FilterOperators.text_rels,
+        "petDino__dino_type__period__name": ("exact",) + FilterOperators.text_rels,
+    }
+
+    ordering_fields = [
+        "nickname",
+        "petDino__pet_name",
+    ]
+
+    # TODO add filter and order with the number of liked dinosaurs
