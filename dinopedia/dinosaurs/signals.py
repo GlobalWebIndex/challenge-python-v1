@@ -12,6 +12,6 @@ def delete_dinosaur_images(sender, instance, using, **kwargs):
     """
     # pass # uncomment pass and comment all the other lines when you populate
     dino_name = str(instance.name)
-    path_ = MEDIA_ROOT + "/images/" + dino_name
+    path_ = f"{MEDIA_ROOT}/images/{dino_name}"
 
     subprocess.run(["rm", "-rf", path_])
