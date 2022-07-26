@@ -48,7 +48,7 @@ From there on everytime you want to run the app, just fire the database up and o
 
 # Assignement
 
-## First Part
+## First Part - Admin Tasks
 
 As an application administrator you’d like to have the ability to :
 * Add a kind of dinosaur 
@@ -132,7 +132,7 @@ There is one exception in the above tasks: remove the image from the admin site.
 TODO: delete the images folder associated with a dinosaur upon the deletion of the specific dinosaur.
 TODO: add a population script
 
-## Second Part
+## Second Part - Developer's Tasks
 
 As a developer you’d like to Integrate with the application and have the ability to : 
 * Find all the available kinds of dinosaurs
@@ -147,7 +147,7 @@ We use django rest framework (DRF) in conjuction django-filters to create A REST
 The drf-yasg package is implemented to create the API documentation (Swagger and Redoc) dynamically.
 
 
-### Developers Task
+### Developer's Task
 
 The developer can use the API to fulfill the first two tasks in a straiught forward fashion.
 
@@ -183,9 +183,6 @@ to get a good idea on how to use the API.
 
 In the following sections the endpoint api/ is described in more detail.
 
-<details><summary>api/dinosaurs response</summary>
-<p>
-
 ##### Endpoint api/
 
 This endpoint leads to
@@ -194,7 +191,10 @@ This endpoint leads to
 2. api/petdinosaurs
 3. api/dinoowners
 
-##### api/dinosaurs
+<details><summary>1. api/dinosaurs</summary>
+<p>
+
+###### List dinosaurs
 
 `get` api/dinosaurs:
 
@@ -270,9 +270,7 @@ Example of a response with one dinosaur:
 </details>
  
 
-###### Filtering
-
-More specifically, the user can filter the dinosaurs according to the following criteria:
+Additionally, the user can filter the dinosaurs according to the following criteria:
 - name
 - period; name of the period, start year, and end_year
 - size; type, height (min and max), weight(min and max)
@@ -283,13 +281,11 @@ To filter add at the end of the endpoint
  ?<field>=<value>
 
 Example:
+
 `get` api/dinosaurs?period__start_year__gte=25000
 returns the dinosaurs that live in a period which year starts at and before 25000.
 
-TODO more example
-###### Ordering
-
-The developer can also order the dinosaurs by:
+Finally, the developer can also order the dinosaurs by:
 - name
 - size
 - size__height_min
@@ -307,7 +303,7 @@ Example:
 returns the dinosaurs in the order of the high to low start year
 dinosaurs in the perios that start at 25000, then at 24000 and so on.
 
-##### Create and update
+##### Create and update a dinosaur
 
 The user can add a dinosaur
 `post` api/dinosaurs
@@ -335,7 +331,7 @@ The Pytest suite is used to create teh following tests for the API functionallit
 
 To create instances for the fictional database we use the package model-bakery.
 
-#### Roadmap - TODOS
+### Roadmap - TODOS
 
 - add tests for more conflicts,
 - add tests for filtering and ordering.
