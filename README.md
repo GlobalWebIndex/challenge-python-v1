@@ -2,9 +2,14 @@
 
 Create a Python application for Dinosaurs Aficionados which is going to be used to maintain and provide various information about all kinds of Dinosaurs.
 
+## Disclaimer
+
+This Readme is going to be long; the idea is to keep as much information possible from the tasks and blend in my procedure. 
+I should mention that, when long parts are included usually I use a wiki page (or some other means) and point to that resource instead of putting everything in a clunky doc. Sorry for the big read.
+
 # TL;DR
 
-How to use:
+How to use: first clone the project, then it depends if you develop local or in docker.
 
 ## Local development
 
@@ -29,6 +34,8 @@ Requires to have postgres and poetry installed.
   ./manage.py runserver 8001
   ```
 - the address 127.0.0.1:8001 should be running indicating the api endpoints
+
+From there on everytime you want to run the app, just fire the database up and only do the last step (except if there migrations to be made).
 ## Docker
 
 - browse to the project path
@@ -58,52 +65,46 @@ As an application administrator you’d like to have the ability to :
 
 #### Basic Tools
 
-Python 3.8 is used (not 3.10) and Poetry as package manager.
-
-Django is used to create the model.
-
-The model persists in a Postgres database.
-- on the images:
-  - the images are held in the file system in the folder dinopedia/images 
-    - this folder is further structured to hold images for each dinosaur separately
-    - TODO a folder media which would allow to keep our other types of files more tidy would be better
-  - the database hold only the path to the image.
-
-Docker with docker compose is used to containerize the app; some care is needed for 
-- the creation of the volumes
-- the creation of the superuser, and
-- the migrations
-- TODO: add a volume for the database
+- Python 3.8 is used (not 3.10) and Poetry as package manager.
+- Django is used to create the model.
+- Postgres database to pesist the model.
+  - on the images:
+    - the images are held in the file system in the folder dinopedia/images 
+      - this folder is further structured to hold images for each dinosaur separately
+      - TODO a folder media which would allow to keep our other types of files more tidy would be better
+    - the database hold only the path to the image.
+- Docker with docker compose is used to containerize the app; some care is needed for 
+  - the creation of the volumes
+  - the creation of the superuser, and
+  - the migrations
+  - TODO: add a volume for the database
 
 PgAdmin is used to check that everything in the database are as planned (both for the local development and for the docker)
 
 #### Basic Packages
 
-Pillow is used for the images we install the package
-
-Black is used for formatting.
-
-Pytest is used to verify the functionallity of the APIs. 
-
-Model-bakery  is used to create the instances for the test.
-
-TODO: add a population script
+- Pillow is used for the images we install the package
+- Black is used for formatting.
+- Pytest is used to verify the functionallity of the APIs. 
+- Model-bakery  is used to create the instances for the test.
 
 ### Admin tasks
 
 #### Model
 
-The model can be found in the image /dinopedia/dinosaurs_models.png
+The model is shown in the image /dinopedia/dinosaurs_models.png
+The basic classes are 
+- the **Dinosaur**,
+- the **DinoOwner**, and
+- the **PetDinosaur**.
 
-The basic classes are the **Dinosaur**, the **DinoOwner** and the **PetDinosaur**.
-
-The relations and the arguments are clearly depicted in the image.\
-
-Here, we will just denote that there is a ManyToMany relationship between Dinosaur and DinoOwner to account for the liked_dinosaurs.
+The relations and the arguments are clearly depicted in the image.
+Here, we will just denote that there is a ManyToMany relationship between Dinosaur and DinoOwner to account for the likes on the dinosaurs (liked_dinosaurs).
 
 #### Admin Site
 
-The model is implemented in the admin site. From there the admin can apply the necessary actions.
+The model is implemented in the admin site, to which the user can browse from the endpoint admin/.
+From there the admin can apply the necessary actions.
 
 More specifically, the admin can create:
 - the Periods, with start and end years BC, and a description 
@@ -117,17 +118,19 @@ More specifically, the admin can create:
 
 - the Dinosaur with the above, plus:
   - a list of typical colours (up to four), 
-  - a descriptionwhose,
+  - a description,
   - and two images.
 
 Additionally, the admin can create, edit, delete:
 - the PetDinosaurs, and
 - the DinoOwners.
+
 ### Roadmap / TODOs
 
-There is one exception in the aove tasks: remove the image from the admin site.
+There is one exception in the above tasks: remove the image from the admin site.
 
-TODO: Also, a good idea is to delete the images folder associated with a dinosaur upon the deletion of the specific dinosaur.
+TODO: delete the images folder associated with a dinosaur upon the deletion of the specific dinosaur.
+TODO: add a population script
 
 ## Second Part
 
@@ -139,36 +142,59 @@ As a developer you’d like to Integrate with the application and have the abili
 
 ### Technical approach
 
-We use django rest framework (DRF) in conjuction django-filters to filter and order the Dinosaurs (and everything else).
+We use django rest framework (DRF) in conjuction django-filters to create A REST API.
 
-Additionally, the drf-yasg package is implemented to create the API documentation (Swagger and Redoc) dynamically.
+The drf-yasg package is implemented to create the API documentation (Swagger and Redoc) dynamically.
+
 
 ### Developers Task
 
-The developer can use the API endpoints to fulfill the tasks.
+The developer can use the API to fulfill the first two tasks in a straiught forward fashion.
 
-For the tasks "like and see your favourite" a slightly playful approach is used:
+For the tasks "like and see your favourite" a slightly "playful" approach is used:
 The developer can create a DinoOwner who
-- can sequentially own a pet dinosaur (only one) with distinctive features, and
+- can sequentially own a pet dinosaur (only one) with distinctive features (the dinosaur has to be created first), and
 - like any amount of dinosaur kinds.
 
-### API Endpoints
+#### API Endpoints
 
-The following main endpoints are provided:
+When browsing to the parent url, the following endpoints are shown:
 
-api/
-api/dinosaurs/<pk>/images1 [name='dinosaur-related']
-admin/
-^images/(?P<path>.*)$
-^swagger(?P<format>\.json|\.yaml)$ [name='schema-json']
-^swagger/$ [name='schema-swagger-ui']
-^redoc/$ [name='schema-redoc']
+- api/
+- api/dinosaurs/<pk>/images1 [name='dinosaur-related']
+- admin/
+- ^images/(?P<path>.*)$
+- ^swagger(?P<format>\.json|\.yaml)$ [name='schema-json']
+- ^swagger/$ [name='schema-swagger-ui']
+- ^redoc/$ [name='schema-redoc']
 
-(which needs cleaning)
 
-#### Endpoint api/
+* The endpoint api/ is what the developer uses, and is further described in the next sections.
+* The endpoint api/dinosaurs/<pk>/images1 is used to treat the upload of the first image of the dinosaur via the API.
+* The endpoint admin/ is already described for the admin tasks.
 
-This endpoint leads 
+##### YASG - Yet Another Swagger Generator
+
+AS mentioned, the libary yasg facilitates the creation of the API Documenation dynamically.
+The user can browse to the endpoints:
+- swagger/ , or
+- redoc/
+to get a good idea on how to use the API.
+
+In the following sections the endpoint api/ is described in more detail.
+
+<details><summary>api/dinosaurs response</summary>
+<p>
+
+##### Endpoint api/
+
+This endpoint leads to
+
+1. api/dinosaurs
+2. api/petdinosaurs
+3. api/dinoowners
+
+##### api/dinosaurs
 
 `get` api/dinosaurs:
 
@@ -177,9 +203,7 @@ The response provides a list of dinosaurs:
 - the amount of likes and from which owner 
 - the images for the dinosaur, the links of which provide the image when used
 
-
-Below find and example of a response with one dinosaur:
-
+Example of a response with one dinosaur:
 <details><summary>api/dinosaurs response</summary>
 <p>
 
@@ -246,9 +270,7 @@ Below find and example of a response with one dinosaur:
 </details>
  
 
-
-
-#### Filtering
+###### Filtering
 
 More specifically, the user can filter the dinosaurs according to the following criteria:
 - name
@@ -260,10 +282,12 @@ More specifically, the user can filter the dinosaurs according to the following 
 To filter add at the end of the endpoint
  ?<field>=<value>
 
-TODO: give examples
+Example:
+`get` api/dinosaurs?period__start_year__gte=25000
+returns the dinosaurs that live in a period which year starts at and before 25000.
 
-
-#### Ordering
+TODO more example
+###### Ordering
 
 The developer can also order the dinosaurs by:
 - name
@@ -278,27 +302,31 @@ The developer can also order the dinosaurs by:
 To order add at the end of the endpoint ?ordering=<field>
 By default the ordering is ascending; with ?ordering=<-field> the order is descending.
 
+Example:
+`get` api/dinosaurs?ordering=-period__start_year
+returns the dinosaurs in the order of the high to low start year
+dinosaurs in the perios that start at 25000, then at 24000 and so on.
 
-Through the API the user can also update the dinosaur details 
-- _Note_: the update of the image which is still a work in progress.
+##### Create and update
 
-#### POST PUT PATCH
+The user can add a dinosaur
+`post` api/dinosaurs
 
-Through the API the user can also update the dinosaur details 
-- the update of the image which is still a work in progress.
+or update a dinosaur
+`patch` api/dinosaurs/<pk>
 
-### YASG - Yet Another Swagger Generator
+- note: the update of the image which is still a work in progress.
 
-The libary yasg facilitates the creation of the API Documenation dynamically
-The user can browse to the endpoints:
-- swagger
-- redoc
+_Note_: `put` can also be used but `patch` is in general to be prefered.
 
-and get a good idea on how to use the API.
+</p>
+</details>
 
-### Testing
+## Unit Tests
 
-The Pytest suite is used and some basic tests have been deployed for the API functionallity
+Disclaimer: only the API has passed through unit tests; the model is tested in more practical fashion in the admin site.
+
+The Pytest suite is used to create teh following tests for the API functionallity:
 - get
 - delete
 - post
@@ -306,6 +334,11 @@ The Pytest suite is used and some basic tests have been deployed for the API fun
 - catch the conflict in the insertion of same names
 
 To create instances for the fictional database we use the package model-bakery.
+
+#### Roadmap - TODOS
+
+- add tests for more conflicts,
+- add tests for filtering and ordering.
 
 ## Technical requirements for the exercise
 
