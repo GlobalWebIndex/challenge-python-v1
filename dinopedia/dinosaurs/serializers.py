@@ -68,10 +68,13 @@ class DinoOwnerSerializerWrite(serializers.ModelSerializer):
 
 class DinoOwnerSerializerRead(DinoOwnerSerializerWrite):
 
-    liked_dinosaurs = DinosaurSerializer(many=True)
+    # liked_dinosaurs = DinosaurSerializer(many=True)
+    number_liked_dinosaurs = serializers.SerializerMethodField()
     class Meta(DinoOwnerSerializerWrite.Meta):
         depth = 1
 
+    def get_number_liked_dinosaurs(self, obj):
+        return obj.liked_dinosaurs.count()
 
 class PetDinosaurSerializerWrite(serializers.ModelSerializer):
     class Meta:
