@@ -209,7 +209,6 @@ class Dinosaur(models.Model):
         null=True,
     )
 
-    # TODO add delete images if the dinosaur is deleted
     image1 = models.ImageField(upload_to=image_directory_path, default="img1.jpg")
     image2 = models.ImageField(upload_to=image_directory_path, default="img2.jpg")
 
