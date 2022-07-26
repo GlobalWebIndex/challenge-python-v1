@@ -45,4 +45,10 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - 5435:5432
-    # TODO add volumes
+    volumes:
+      - dinopedia_data:/var/lib/postgresql/data
+      - dinopedia_backups:/pg_backups
+
+volumes:
+  dinopedia_data: {}
+  dinopedia_backups: {} 
