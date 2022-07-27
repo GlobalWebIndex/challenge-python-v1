@@ -90,7 +90,7 @@ class TestDinoOwnersEndpoint:
         assert response.status_code == 201
 
     @pytest.mark.django_db
-    def test_patch_colours(self, api_client, admin):
+    def test_patch_nickname(self, api_client, admin):
         #
         quantity = 2
         dinos = create_("dinoOwner", quantity)
