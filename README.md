@@ -4,8 +4,14 @@ Create a Python application for Dinosaurs Aficionados which is going to be used 
 
 ## Disclaimer
 
-This Readme is going to be long; the idea is to keep as much information possible from the tasks and blend in my procedure. 
-I should mention that, when long parts are included usually I use a wiki page (or some other means) and point to that resource instead of putting everything in a clunky doc. Sorry for the big read.
+This Readme is not a typical one, and therefore does not have the usual structure. You might even consider it as a documentation more than a Readme.\
+Hence, it is going to be a bit long; the idea is to keep as much information possible from the tasks asked and blend in my procedure, marked downn as _solution_ at the end of each task.
+
+> In reallity, when long parts are included in a Readme I use a wiki page (or some other means) and point to that resource instead of putting everything in a clunky doc.
+
+Additionally, the model is depicted in figure dinosaurs_models.png created with django-extension and pudotplot. You can also find a first uml class diagram that I did before the project in mockups in the image uml_class.jpg.
+
+Sorry for the big read :) .
 
 # TL;DR
 
@@ -62,7 +68,7 @@ As an application administrator you’d like to have the ability to :
 * Associate up to 2 images with each dinosaur
 * Remove image(s) 
 
-<details><summary>1. api/dinosaurs</summary>
+<details><summary>Solution</summary>
 <p>
 
 ### Technical Approach
@@ -87,7 +93,7 @@ PgAdmin is used to check that everything in the database are as planned (both fo
 
 - Pillow is used for the images we install the package
 - Black is used for formatting.
-- Pytest is used to verify the functionallity of the APIs. 
+- Pytest and pytest-django are used to verify the functionallity of the APIs. 
 - Model-bakery  is used to create the instances for the test.
 
 ### Admin tasks
@@ -95,12 +101,13 @@ PgAdmin is used to check that everything in the database are as planned (both fo
 #### Model
 
 The model is shown in the image /dinopedia/dinosaurs_models.png
-The basic classes are 
+
+The basic classes are: 
 - the **Dinosaur**,
 - the **DinoOwner**, and
 - the **PetDinosaur**.
 
-The relations and the arguments are clearly depicted in the image.
+The relations and the arguments are clearly depicted in figure dinosaurs_models.png.\
 Here, we will just denote that there is a ManyToMany relationship between Dinosaur and DinoOwner to account for the likes on the dinosaurs (liked_dinosaurs).
 
 _Note_: the folder with the dinosaur images is deleted after the specific dinosaur is deleted; we use _django signals_ for this operation.
@@ -136,13 +143,13 @@ Finally, the admin can delete anything, with the following consequences:
   - all the likes to this dinosaur will be deleted
 - upon deletion of a pet dinosaur
   - the dino owner will no longer have this pet dino
-- the deletion of the dino owner has no other effects
+- the deletion of the dino owner will delete the likes from this owner to the kinds of dinosaurs.
 
 ### Roadmap / TODOs
 
 There is one exception in the above tasks: remove the image from the admin site.
 
-TODO: add a population script
+TODO: add a population script\
 TODO: add unit tests
 
 </p>
@@ -152,13 +159,13 @@ TODO: add unit tests
 
 ## Second Part - Developer's Tasks
 
-As a developer you’d like to Integrate with the application and have the ability to : 
+As a developer you’d like to Integrate with the application and have the ability to: 
 * Find all the available kinds of dinosaurs
 * Search for a particular kind and get their images
 * Like your favourite (Optional)
 * See your favourites (Optional)
 
-<details><summary>1. api/dinosaurs</summary>
+<details><summary>Solution</summary>
 <p>
 
 ### Technical approach
@@ -166,6 +173,8 @@ As a developer you’d like to Integrate with the application and have the abili
 We use django rest framework (DRF) in conjuction django-filters to create A REST API.
 
 The drf-yasg package is implemented to create the API documentation (Swagger and Redoc) dynamically.
+
+See more in the [technical solution for the first part](#technical-approach)
 
 
 ### Developer's Task
@@ -183,35 +192,37 @@ For the tasks "like and see your favourite" a slightly "playful" approach is use
 When browsing to the parent url, the following endpoints are shown:
 
 - api/
-- api/dinosaurs/<pk>/images1 [name='dinosaur-related']
+- api/dinosaurs/\<pk\>/images1 [name='dinosaur-related']
 - admin/
-- ^images/(?P<path>.*)$
-- ^swagger(?P<format>\.json|\.yaml)$ [name='schema-json']
+- ^images/(?P\<path\>.*)$
+- ^swagger(?P\<format\>\.json|\.yaml)$ [name='schema-json']
 - ^swagger/$ [name='schema-swagger-ui']
 - ^redoc/$ [name='schema-redoc']
 
 
-* The endpoint api/ is what the developer uses, and is further described in the next sections.
-* The endpoint api/dinosaurs/<pk>/images1 is used to treat the upload of the first image of the dinosaur via the API.
-* The endpoint admin/ is directs to the admin site.
+The endpoint api/ is what the developer uses, and is further described in the next sections.\
+The endpoint api/dinosaurs/\<pk\>/images1 is used to treat the upload of the first image of the dinosaur via the API.\
+The endpoint admin/ is directs to the admin site.
 
 In the following sections the endpoint api/ is described in more detail.
 
 ##### TL;DR
 
-In short:
+In short, use:
 `get` api/dinosaurs: to list the dinosaurs
 `post` api/dinosaurs: to  add a dinosaur
-`put` api/dinosaurs/<pk>: to  update a dinosaur
-`delete` api/dinosaurs/<pk>: to delete a dinosaur
+`put` api/dinosaurs/\<pk\>: to  update a dinosaur
+`delete` api/dinosaurs/\<pk\>: to delete a dinosaur
+
 `get` api/petdinosaurs: to list the pet dinosaurs
 `post` api/petdinosaurs: to add a pet dinosaur
-`put` api/petdinosaurs/<pk>: to update a pet dinosaur
-`delete` api/petdinosaurs/<pk>: to delete a pet dinosaur
+`put` api/petdinosaurs/\<pk\>: to update a pet dinosaur
+`delete` api/petdinosaurs/\<pk\>: to delete a pet dinosaur
+
 `get` api/dinoowners: to list the dinosaur owners
 `post` api/dinoowners: to add a d dinosaur owner
-`put` api/dinoowners/<pk>: to update a dinosaur owner
-`delete` api/dinoowners/<pk>: to delete a dinosaur owner
+`put` api/dinoowners/\<pk\>: to update a dinosaur owner
+`delete` api/dinoowners/\<pk\>: to delete a dinosaur owner
 
 Using the `get` endpoint the user can also filter, order and search.
 
@@ -231,7 +242,7 @@ _Note_ that the following filters are supplied:
 
 ##### API Documentation
 
-AS mentioned, the libary yasg facilitates the creation of the API Documenation dynamically.
+As mentioned, the libary yasg facilitates the creation of the API Documenation dynamically.
 The user can browse to the endpoints:
 - swagger/ , or
 - redoc/
@@ -333,7 +344,7 @@ Filter can take place according to the following criteria:
 - TODO: with most likes
 
 To filter add at the end of the endpoint
- ?<field>=<value>
+ ?\<field\>=\<value\>
 
 Example:
 
@@ -350,8 +361,8 @@ Ordering can take place for the following attributes:
 - period__start_year
 - period__end_year
 
-To order add at the end of the endpoint ?ordering=<field>
-By default the ordering is ascending; with ?ordering=<-field> the order is descending.
+To order add at the end of the endpoint ?ordering=\<field\>
+By default the ordering is ascending; with ?ordering=\<-field\> the order is descending.
 
 Example:
 
@@ -391,7 +402,7 @@ the period, size and an eating_type could be null or have an existing id
 After the post the user could patch two images for the dinosaur (*work in progress*)
 
 The user may also update a dinosaur provided that he/she know its id
-`patch` api/dinosaurs/<pk>
+`patch` api/dinosaurs/\<pk\>
 
 for example for colours with a payload like the folowing
 
@@ -416,14 +427,21 @@ for example for colours with a payload like the folowing
 
 _Note_: `put` can also be used ti update the dinosaur but `patch` is to be prefered in general.
 
-</p>
-</details>
-
 ##### Delete a dinosaur
 
-Check if we can do that in case a petdinosaur relates to it 
+`delete` api/dinosaurs/\<pk\>
 
-`delete` api/dinosaurs/<pk>
+Upon the deletion of a dinosaur:
+  - all pet dinosaurs of this kind will be deleted
+  - hence the pet owner of those pet dinosaur will no longer have a pet
+  - all the likes to this dinosaur will be deleted
+  - the folder with the dinosaur images is deleted after the specific dinosaur is deleted
+
+
+go to [api endpoints](#api-endpoints)
+
+</p>
+</details>
 
 <details><summary>2. api/petdinosaurs</summary>
 <p>
@@ -504,7 +522,7 @@ all arguments must be provided.
 
 
 The user may also update a pet dinosaur provided that he/she know its id
-`patch` api/petdinosaurs/<pk>
+`patch` api/petdinosaurs/\<pk\>
 
 for example for colours with a payload like the folowing
 
@@ -520,15 +538,22 @@ for example for colours with a payload like the folowing
 </p>
 </details>
 
-
-<details><summary>3. api/dinoowner</summary>
-<p>
-
 ##### Delete a pet dinosaur
 
 TODO check if this is possible in case an owner depend on ti
 
-`delete` api/petdinosaurs/<pk>
+`delete` api/petdinosaurs/\<pk\>
+
+Upon deletion of a pet dinosaur
+  - the dino owner of this pet dinosaur will no longer have a pet
+
+go to [api endpoints](#api-endpoints)
+
+</p>
+</details>
+
+<details><summary>3. api/dinoowner</summary>
+<p>
 
 ##### List Dino Owners
 
@@ -592,11 +617,11 @@ The owner can have only one dinosaur but he can like as many types of dinosaurs 
 
 
 The user may also update the characteristics of an owner with the id
-`patch` api/dinoowners/<pk>
+`patch` api/dinoowners/\<pk\>
 
 for example for nickname with a payload like the folowing
 
-<details><summary>payload for post</summary>
+<details><summary>payload for patch</summary>
 </p>
 
 ```json
@@ -608,17 +633,21 @@ for example for nickname with a payload like the folowing
 </p>
 </details>
 
+##### Delete a dinosaur owner
 
-##### Delete an owner
+`delete` api/dinoowners/\<pk\>
 
-`delete` api/dinoowners/<pk>
+The deletion of the dino owner will delete the likes from this owner to the kinds of dinosaurs.
 
+go to [api endpoints](#api-endpoints)
+
+</p>
+</details>
 
 
 #### Unit Tests
 
-Disclaimer: only the API has passed through unit tests; 
-the model is tested in more practical fashion in the admin site.
+Disclaimer: only the API has passed through unit tests; the model is tested in more practical fashion in the admin site.
 
 The Pytest suite is used to create the following tests for the API functionallity:
 - get
@@ -636,6 +665,7 @@ To create instances for the fictional database we use the package model-bakery.
 
 </p>
 </details>
+
 ## Technical requirements for the exercise
 
 We would like you to try and present a well written solution that will cover the above criteria. Utilising the following points
