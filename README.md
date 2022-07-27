@@ -28,7 +28,7 @@ Requires to have postgres and poetry installed.
   ```
   ./manage.py createsuperuser
   ```
-  add name, mail and password
+  add name, mail and password: use those as credentials to enter the admin site.
 - run the server in port 8001 (so it does not conflict with the port run in docker) with: 
   ```
   ./manage.py runserver 8001
@@ -44,6 +44,7 @@ From there on everytime you want to run the app, just fire the database up and o
   docker-compose up --build -d
   ```
 - the address 127.0.0.1:8000 should be running indicating the api endpoints
+- to enter the admin page, the credentials are admin:admin
 
 
 # Assignement
@@ -61,6 +62,9 @@ As an application administrator you’d like to have the ability to :
 * Associate up to 2 images with each dinosaur
 * Remove image(s) 
 
+<details><summary>1. api/dinosaurs</summary>
+<p>
+
 ### Technical Approach
 
 #### Basic Tools
@@ -68,16 +72,14 @@ As an application administrator you’d like to have the ability to :
 - Python 3.8 is used (not 3.10) and Poetry as package manager.
 - Django is used to create the model.
 - Postgres database to pesist the model.
-  - on the images:
-    - the images are held in the file system in the folder dinopedia/images 
+  - more on the images:
+    - the images are held in the file system in the folder dinopedia/media/images 
       - this folder is further structured to hold images for each dinosaur separately
-      - TODO a folder media which would allow to keep our other types of files more tidy would be better
     - the database hold only the path to the image.
 - Docker with docker compose is used to containerize the app; some care is needed for 
-  - the creation of the volumes
+  - the creation of the volumes,
   - the creation of the superuser, and
-  - the migrations
-  - TODO: add a volume for the database
+  - the migrations.
 
 PgAdmin is used to check that everything in the database are as planned (both for the local development and for the docker)
 
@@ -101,6 +103,7 @@ The basic classes are
 The relations and the arguments are clearly depicted in the image.
 Here, we will just denote that there is a ManyToMany relationship between Dinosaur and DinoOwner to account for the likes on the dinosaurs (liked_dinosaurs).
 
+_Note_: the folder with the dinosaur images is deleted after the specific dinosaur is deleted; we use _django signals_ for this operation.
 #### Admin Site
 
 The model is implemented in the admin site, to which the user can browse from the endpoint admin/.
@@ -121,16 +124,31 @@ More specifically, the admin can create:
   - a description,
   - and two images.
 
-Additionally, the admin can create, edit, delete:
+Additionally, the admin can create and edit
 - the PetDinosaurs, and
 - the DinoOwners.
+
+Finally, the admin can delete anything, with the following consequences:
+- the deletion of period, size, eating type will not delete the dinosaur, but in this attributes will be set to none,
+- upon deletion of a dinosaur, 
+  - the pet dinosaur  of this kind will be deleted
+  - so the pet owner of this pet dinosaur will no longe have a pet
+  - all the likes to this dinosaur will be deleted
+- upon deletion of a pet dinosaur
+  - the dino owner will no longer have this pet dino
+- the deletion of the dino owner has no other effects
 
 ### Roadmap / TODOs
 
 There is one exception in the above tasks: remove the image from the admin site.
 
-TODO: delete the images folder associated with a dinosaur upon the deletion of the specific dinosaur.
 TODO: add a population script
+TODO: add unit tests
+
+</p>
+</details>
+
+
 
 ## Second Part - Developer's Tasks
 
@@ -139,6 +157,9 @@ As a developer you’d like to Integrate with the application and have the abili
 * Search for a particular kind and get their images
 * Like your favourite (Optional)
 * See your favourites (Optional)
+
+<details><summary>1. api/dinosaurs</summary>
+<p>
 
 ### Technical approach
 
@@ -152,9 +173,10 @@ The drf-yasg package is implemented to create the API documentation (Swagger and
 The developer can use the API to fulfill the first two tasks in a straiught forward fashion.
 
 For the tasks "like and see your favourite" a slightly "playful" approach is used:
-The developer can create a DinoOwner who
-- can sequentially own a pet dinosaur (only one) with distinctive features (the dinosaur has to be created first), and
-- like any amount of dinosaur kinds.
+- The developer can create a PetDinosaur which belongs to a type of dinosaur and also has distictive characteristics on its own,
+- The developer can create a DinoOwner who
+  - can own a pet dinosaur (only one), and
+  - like any amount of dinosaur kinds.
 
 #### API Endpoints
 
@@ -171,17 +193,49 @@ When browsing to the parent url, the following endpoints are shown:
 
 * The endpoint api/ is what the developer uses, and is further described in the next sections.
 * The endpoint api/dinosaurs/<pk>/images1 is used to treat the upload of the first image of the dinosaur via the API.
-* The endpoint admin/ is already described for the admin tasks.
+* The endpoint admin/ is directs to the admin site.
 
-##### YASG - Yet Another Swagger Generator
+In the following sections the endpoint api/ is described in more detail.
+
+##### TL;DR
+
+In short:
+`get` api/dinosaurs: to list the dinosaurs
+`post` api/dinosaurs: to  add a dinosaur
+`put` api/dinosaurs/<pk>: to  update a dinosaur
+`delete` api/dinosaurs/<pk>: to delete a dinosaur
+`get` api/petdinosaurs: to list the pet dinosaurs
+`post` api/petdinosaurs: to add a pet dinosaur
+`put` api/petdinosaurs/<pk>: to update a pet dinosaur
+`delete` api/petdinosaurs/<pk>: to delete a pet dinosaur
+`get` api/dinoowners: to list the dinosaur owners
+`post` api/dinoowners: to add a d dinosaur owner
+`put` api/dinoowners/<pk>: to update a dinosaur owner
+`delete` api/dinoowners/<pk>: to delete a dinosaur owner
+
+Using the `get` endpoint the user can also filter, order and search.
+
+_Note_ that the following filters are supplied:
+- for the literals arguments, e.g. name, 
+  - =
+  - __icontains=
+  - __iexact=
+  - __contains=
+- for the numerical argumenrs, e.g. start_year or age:
+  - =
+  - lt
+  - gt
+  - gte
+  - lte
+  - in
+
+##### API Documentation
 
 AS mentioned, the libary yasg facilitates the creation of the API Documenation dynamically.
 The user can browse to the endpoints:
 - swagger/ , or
 - redoc/
 to get a good idea on how to use the API.
-
-In the following sections the endpoint api/ is described in more detail.
 
 ##### Endpoint api/
 
@@ -198,12 +252,13 @@ This endpoint leads to
 
 `get` api/dinosaurs:
 
-The response provides a list of dinosaurs:
-- details for the period, size and eating type. 
-- the amount of likes and from which owner 
+The response provides a list of dinosaurs, with the following for each one:
+- details for the period, size and eating type,
+- typical colours, (up to four) 
+- the amount of likes and from which owner,
 - the images for the dinosaur, the links of which provide the image when used
 
-Example of a response with one dinosaur:
+Example of a response (with one dinosaur):
 <details><summary>api/dinosaurs response</summary>
 <p>
 
@@ -269,13 +324,13 @@ Example of a response with one dinosaur:
 </p>
 </details>
  
-
-Additionally, the user can filter the dinosaurs according to the following criteria:
+Filter can take place according to the following criteria:
 - name
 - period; name of the period, start year, and end_year
 - size; type, height (min and max), weight(min and max)
 - eating_type; 'C' for Carnivore, 'H' for Herbivore, 'O' for omnivore.
 - description
+- TODO: with most likes
 
 To filter add at the end of the endpoint
  ?<field>=<value>
@@ -285,7 +340,7 @@ Example:
 `get` api/dinosaurs?period__start_year__gte=25000
 returns the dinosaurs that live in a period which year starts at and before 25000.
 
-Finally, the developer can also order the dinosaurs by:
+Ordering can take place for the following attributes:
 - name
 - size
 - size__height_min
@@ -299,30 +354,273 @@ To order add at the end of the endpoint ?ordering=<field>
 By default the ordering is ascending; with ?ordering=<-field> the order is descending.
 
 Example:
+
 `get` api/dinosaurs?ordering=-period__start_year
 returns the dinosaurs in the order of the high to low start year
 dinosaurs in the perios that start at 25000, then at 24000 and so on.
+
+Finally, the user can search for a dinosaur with a specific text in the _description_ using the search query word
+Example:
+`get` api/dinosaurs?seard=A description to rule them all
+
 
 ##### Create and update a dinosaur
 
 The user can add a dinosaur
 `post` api/dinosaurs
 
-or update a dinosaur
-`patch` api/dinosaurs/<pk>
+the period, size and an eating_type could be null or have an existing id
 
-- note: the update of the image which is still a work in progress.
+<details><summary>payload for post</summary>
+</p>
 
-_Note_: `put` can also be used but `patch` is in general to be prefered.
+```json
+        {
+            "name": "Dino POST",
+            "description": "ad description",
+            "typical_colours": [colours],
+            "period": period_id,
+            "size": size_id,
+            "eating_type": eating_type_id,
+        }
+```
 
 </p>
 </details>
 
-## Unit Tests
+After the post the user could patch two images for the dinosaur (*work in progress*)
 
-Disclaimer: only the API has passed through unit tests; the model is tested in more practical fashion in the admin site.
+The user may also update a dinosaur provided that he/she know its id
+`patch` api/dinosaurs/<pk>
 
-The Pytest suite is used to create teh following tests for the API functionallity:
+for example for colours with a payload like the folowing
+
+
+
+<details><summary>payload for patch</summary>
+</p>
+
+```json
+
+{
+  "typical_colours": ["white"],
+}
+
+```
+
+</p>
+</details>
+
+- note: the update of the image which is still a work in progress.
+
+
+_Note_: `put` can also be used ti update the dinosaur but `patch` is to be prefered in general.
+
+</p>
+</details>
+
+##### Delete a dinosaur
+
+Check if we can do that in case a petdinosaur relates to it 
+
+`delete` api/dinosaurs/<pk>
+
+<details><summary>2. api/petdinosaurs</summary>
+<p>
+
+##### List petdinosaurs
+
+`get` api/petdinosaurs:
+
+The response provides a list of pet dinosaurs with:
+- theid specifics; pet name, age, height, weight, width, colour, diet, and description,
+- details of their dinosaur type they are, so we can have a comparison of their specific appeareance comparing to their kind. 
+- details of their owner. 
+
+Filtering an take place according to the following criteria:
+- pet_name
+- dino_type__name
+- dino_type__period__name
+- dino_type__period__start_year
+- dino_type__period__end_year
+- dino_type__size__size
+- age
+- height
+- weight
+- diet
+- pet_description
+
+Example:
+
+`get` api/petdinosaurs?dino_type __period__start_year__gte=25000
+returns the pet dinosaurs whose species lived in a period which year starts at and before 25000.
+
+
+Ordering can take place according for the following attributes:
+- dino_type__name
+- pet_name
+- height
+- weight
+- age
+
+Example:
+
+`get` api/petdinosaurs?ordering=-height
+returns the petdinosaurs in the order of the high to short pet dinosaur.
+
+Finally, search for a specific text in the _description_ using the search query word.
+
+Example:
+
+`get` api/petdinosaurs?search=A description to rule them all
+
+##### Create and update a pet dinosaur
+
+The user can add a pet dinosaur
+`post` api/petdinosaurs
+
+all arguments must be provided.
+
+<details><summary>payload for post</summary>
+</p>
+
+```json
+  {
+      "dino_type": dinosaur_id,
+      "pet_name": "WaterMelon2",
+      "age": 1,
+      "height": 0.001,
+      "length": 0.001,
+      "width": 0.001,
+      "weight": 0.001,
+      "colour": "a colour",
+      "diet": "water",
+      "pet_description": "this is a dino who drinks only water",
+  }
+```
+
+</p>
+</details>
+
+
+The user may also update a pet dinosaur provided that he/she know its id
+`patch` api/petdinosaurs/<pk>
+
+for example for colours with a payload like the folowing
+
+<details><summary>payload for post</summary>
+</p>
+
+```json
+  {
+      "colour": "another colour",
+  }
+```
+
+</p>
+</details>
+
+
+<details><summary>3. api/dinoowner</summary>
+<p>
+
+##### Delete a pet dinosaur
+
+TODO check if this is possible in case an owner depend on ti
+
+`delete` api/petdinosaurs/<pk>
+
+##### List Dino Owners
+
+`get` api/dinoowner:
+
+The response provides a list of dinosaur owners:
+- nickname
+- their pet dinosaur
+- the kind of dinosaurs they like
+
+Filtering an take place according to the following criteria:
+- nickname
+- petDino__pet_name
+- petDino__age
+- petDino__height
+- petDino__length
+- petDino__colour
+- petDino__diet
+- petDino__dino_type__name
+- petDino__dino_type__period__name
+- number_liked_dinosaurs
+
+
+Example:
+
+`get` api/dinoowners?petDino__dino_type__period__name=first period
+returns the pet dinosaurs whose species lived in a period with name "first period".
+
+
+Ordering can take place according for the following attributes:
+- nickname
+- petDino__pet_name
+
+Example:
+
+`get` api/petdinosaurs?ordering=nickname
+returns the owners with alphabetical order.
+
+
+##### Create and update a dinosaur owner
+
+The user can add a pet dinosaur
+`post` api/dinoowners
+
+only the nickname argument must be provided.
+The owner can have only one dinosaur but he can like as many types of dinosaurs he/she wants.
+
+<details><summary>payload for post</summary>
+</p>
+
+```json
+{
+  "nickname": "Cool Owner",
+  "petDino": petDinosaur_id,
+  "liked_dinosaurs": [dinosaur_id1, dinosaur_id2, ...]
+}
+```
+
+</p>
+</details>
+
+
+The user may also update the characteristics of an owner with the id
+`patch` api/dinoowners/<pk>
+
+for example for nickname with a payload like the folowing
+
+<details><summary>payload for post</summary>
+</p>
+
+```json
+  {
+      "nickname": "Awesome Owner",
+  }
+```
+
+</p>
+</details>
+
+
+##### Delete an owner
+
+`delete` api/dinoowners/<pk>
+
+
+
+#### Unit Tests
+
+Disclaimer: only the API has passed through unit tests; 
+the model is tested in more practical fashion in the admin site.
+
+The Pytest suite is used to create the following tests for the API functionallity:
 - get
 - delete
 - post
@@ -331,11 +629,13 @@ The Pytest suite is used to create teh following tests for the API functionallit
 
 To create instances for the fictional database we use the package model-bakery.
 
-### Roadmap - TODOS
+##### Roadmap - TODOS
 
 - add tests for more conflicts,
 - add tests for filtering and ordering.
 
+</p>
+</details>
 ## Technical requirements for the exercise
 
 We would like you to try and present a well written solution that will cover the above criteria. Utilising the following points
