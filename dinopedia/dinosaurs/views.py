@@ -12,7 +12,6 @@ from dinosaurs.serializers import (
     PetDinosaurSerializerWrite,
 )
 
-# TODO add search functionality in general
 class FilterOperators:
     """
     Definitions of the Field lookups, see:
@@ -74,6 +73,10 @@ class DinosaurViewSet(viewsets.ModelViewSet):
         "period__start_year",
         "period__end_year",
     ]
+
+    search_fields = (
+        "description",
+    )
 
     @decorators.action(
         detail=True,
@@ -163,6 +166,9 @@ class PetDinosaurViewSet(viewsets.ModelViewSet):
         "age",
     ]
 
+    search_fields = (
+        "pet_description",
+    )
 
 class DinoOwnerViewSet(viewsets.ModelViewSet):
     # different serializers in Read and Write
@@ -195,4 +201,18 @@ class DinoOwnerViewSet(viewsets.ModelViewSet):
         "petDino__pet_name",
     ]
 
-    # TODO add filter and order with the number of liked dinosaurs
+    def get_queryset(self):
+
+        queryset = DinoOwner.objects.all()
+
+        number_liked_dinosaurs = self.request.query_params.get(
+            "number_liked_dinosaurs", None
+        )
+            
+        if number_liked_dinosaurs is not None:
+            for owner in queryset:
+                if owner.liked_dinosaurs.count() != int(number_liked_dinosaurs):
+                    # remove owner from queryset
+                    queryset = queryset.exclude(pk=owner.pk)
+
+        return queryset
