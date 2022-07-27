@@ -17,7 +17,7 @@ images
 
 # images
 *.png
-!dinopedia/dinosaurs_models.png
+!dinosaurs_models.png
 
 # for prod in vm server
 nohup.out

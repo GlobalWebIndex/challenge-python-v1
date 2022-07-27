@@ -29,7 +29,6 @@ class DinosaurSerializer(serializers.ModelSerializer):
         depth = 1
         # read_only_fields = ["image1", "image2"]
 
-
     def get_likes_count_by(self, obj):
         """TODO: find something smarter"""
         liked_by = []
@@ -39,9 +38,18 @@ class DinosaurSerializer(serializers.ModelSerializer):
             for liked_dino in liked_dinos:
                 if obj.name in liked_dino.name:
                     likes_count += 1
-                    liked_by.append((dinoOwner.id, dinoOwner.nickname,))
+                    liked_by.append(
+                        (
+                            dinoOwner.id,
+                            dinoOwner.nickname,
+                        )
+                    )
 
-        return (likes_count, liked_by,)
+        return (
+            likes_count,
+            liked_by,
+        )
+
 
 class DinosaurSerializerWrite(DinosaurSerializer):
     class Meta(DinosaurSerializer.Meta):
@@ -70,11 +78,13 @@ class DinoOwnerSerializerRead(DinoOwnerSerializerWrite):
 
     # liked_dinosaurs = DinosaurSerializer(many=True)
     number_liked_dinosaurs = serializers.SerializerMethodField()
+
     class Meta(DinoOwnerSerializerWrite.Meta):
         depth = 1
 
     def get_number_liked_dinosaurs(self, obj):
         return obj.liked_dinosaurs.count()
+
 
 class PetDinosaurSerializerWrite(serializers.ModelSerializer):
     class Meta:
@@ -94,6 +104,6 @@ class PetDinosaurSerializerRead(PetDinosaurSerializerWrite):
     def get_owner(self, obj):
         owner = DinoOwner.objects.filter(petDino=obj).first()
         owner_data = DinoOwnerSerializerWrite(owner).data
-        #Depends on how much detail you want in the response
+        # Depends on how much detail you want in the response
         # owner_data = DinoOwnerSerializerRead(owner).data
         return owner_data

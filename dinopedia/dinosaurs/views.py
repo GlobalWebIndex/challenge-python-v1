@@ -51,7 +51,7 @@ class DinosaurViewSet(viewsets.ModelViewSet):
         "period__name": ("exact",) + FilterOperators.text_rels,
         "period__start_year": FilterOperators.usual_rels,
         "period__end_year": FilterOperators.usual_rels,
-        # more with length, width
+        #
         "size__size": ("exact",) + FilterOperators.text_rels,
         "size__height_min": FilterOperators.usual_rels,
         "size__height_max": FilterOperators.usual_rels,
