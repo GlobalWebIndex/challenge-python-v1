@@ -93,5 +93,7 @@ class PetDinosaurSerializerRead(PetDinosaurSerializerWrite):
 
     def get_owner(self, obj):
         owner = DinoOwner.objects.filter(petDino=obj).first()
-        owner_data = DinoOwnerSerializerRead(owner).data
+        owner_data = DinoOwnerSerializerWrite(owner).data
+        #Depends on how much detail you want in the response
+        # owner_data = DinoOwnerSerializerRead(owner).data
         return owner_data
