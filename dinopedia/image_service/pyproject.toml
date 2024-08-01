@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "image_service"
+version = "0.1.0"
+description = "Image service for Dinopedia"
+authors = ["CM"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.68.0"
+uvicorn = "^0.15.0"
+sqlalchemy = "<1.4"
+databases = "^0.4.3"
+asyncpg = "^0.24.0"
+psycopg2 = "^2.9.1"
+python-multipart = "^0.0.5"
+httpx  =  "0.23.2"
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+

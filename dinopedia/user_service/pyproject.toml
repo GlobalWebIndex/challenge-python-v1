@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "user_service"
+version = "0.1.0"
+description = "User service for Dinopedia"
+authors = ["CM"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.68.0"
+uvicorn = "^0.15.0"
+sqlalchemy = "<1.4"
+databases = "^0.4.3"
+asyncpg = "^0.24.0"
+python-jose = "^3.3.0"
+psycopg2 = "^2.9.1"
+passlib = "^1.7.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+

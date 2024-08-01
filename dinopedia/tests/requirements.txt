@@ -1,0 +1,6 @@
+# tests/requirements.txt
+pytest==7.4.0
+httpx==0.24.0
+pytest-asyncio==0.21
+pytest-mock==3.10.0
+
