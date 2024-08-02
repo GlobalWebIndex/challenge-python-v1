@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  dinosaur_service:
+    build:
+      context: ./dinosaur_service
+    image: dinopedia_dinosaur_service
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: dinopedia
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "8001:8001"
+    depends_on:
+      - db
+
+  image_service:
+    build:
+      context: ./image_service
+    image: dinopedia_image_service
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: dinopedia
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "8002:8002"
+    depends_on:
+      - db
+
+  user_service:
+    build:
+      context: ./user_service
+    image: dinopedia_user_service
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: dinopedia
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "8003:8003"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_DB: dinopedia
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  tests:
+    build:
+      context: ./tests
+    image: dinopedia_tests
+    depends_on:
+      - dinosaur_service
+      - image_service
+      - user_service
+      - db
+

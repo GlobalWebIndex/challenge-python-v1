@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "dinosaur_service"
+version = "0.1.0"
+description = "Dinosaur service for Dinopedia"
+authors = ["CM"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.68.0"
+uvicorn = "^0.15.0"
+sqlalchemy = "<1.4"
+databases = "^0.4.3"
+asyncpg = "^0.24.0"
+psycopg2 = "^2.9.1"
+requests = "^2.26.0"
+httpx  =  "0.23.2"
+cachetools = "^5.0.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+pytest-asyncio = "^0.20.3"
+

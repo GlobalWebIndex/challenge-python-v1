@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "dinosaur_service"
+version = "0.1.0"
+description = "Dinosaur service for Dinopedia"
+authors = ["Your Name <your.email@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.68.0"
+uvicorn = "^0.15.0"
+sqlalchemy = "^1.4.22"
+databases = "^0.4.3"
+asyncpg = "^0.24.0"
+python-jose = "^3.3.0"  # Add this line to include python-jose
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+
