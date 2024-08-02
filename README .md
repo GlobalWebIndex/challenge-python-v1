@@ -53,7 +53,6 @@ curl -X DELETE "http://localhost:8002/images?dinosaur_id=1&token=456" -H "accept
 
 
 ### could improve further:
-no logging used
 better caching with a redis service
 complete token authorization for users
 docker-compose for dev, staging environments etc
