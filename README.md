@@ -30,4 +30,4 @@ We would like you to try and present a well written solution that will cover the
 Get creative as much as you want, we WILL appreciate it. You will not be evaluated based on how well you follow these instructions, but based on how sensible your solution will be. In case you are not able to implement something you would normally implement for time reasons, make it clear with a comment.
 
 # Submission
-Just create a private repo out of this and send invites to collaborate/review on the following emails <cbekos@gwi.com> / <kgiannousis@gwi.com> / <zmaxa@gwi.com> / <psalonitis@gwi.com>
+Just create a private repo out of this and send invites to collaborate/review on the following emails akolovos@gwi.com / epleioni@gwi.com / kgiannousis@gwi.com / psalonitis@gwi.com / zmaxa@gwi.com
